@@ -1,0 +1,143 @@
+# Common
+MSG_OK = "OK"
+AWS_S3_BUCKET_NOT_FOUND = "S3 storage not found."
+UNRECOGNIZED_ERROR = "Unrecognized error occurred."
+METHOD_FORBIDDEN = "Forbidden method."
+DETAILS_NOT_FOUND = "No details found."
+UNAUTHORIZED_VIEW = "Access unauthorized."
+FILE_NOT_FOUND = "No file found."
+WRONG_AUTH_TOKEN_SUPPLIED = "Wrong auth token supplied."
+FILE_NOT_EXCEL_TYPE = "File is not of excel type."
+DELETES_DISABLED = "Deletes are not enabled currently."
+MOVES_DISABLED = "Moves are not enabled currently."
+TOKEN_EXPIRED = "Token expired. Try again."
+ADMIN_ONLY_FUNCTION = "Operation requires admin access."
+
+# Auth
+LOGIN_CREDENTIALS_REQUIRED = "Username / Password not specified."
+LOGIN_USERNAME_REQUIRED = "Username required for login."
+LOGIN_PASSWORD_REQUIRED = "Password required for login."
+ERR_LOGOUT = "Error in logging out."
+LOGIN_WRONG_CREDENTIALS = "Wrong username / password."
+
+# Customer
+CANNOT_CREATE_CUSTOMER = "Please fill all the mandatory details."
+CUSTOMER_NOT_FOUND = "No customer found with associated customer ID."
+ADDRESS_NOT_FOUND = "No address found for associated user."
+ADDRESS_ALREADY_EXISTS = "Address already exists."
+ADDRESS_ADD_FAILED = "Failed to add the address."
+CUSTOMER_ADDED = "Customer added."
+
+
+# Members
+CANNNOT_DELETE_MEMBER_ACCESS = "Member has access only to this departmenta and region. Delete operation not allowed"
+MEMBER_ACCESS_NOT_FOUND = "Member doesnt have access to any department and region"
+MANAGER_MEMBER_GROUP_CONDN_FAILED = "Member group is not present in the subtree of manager group"
+REQUEST_MEMBER_ACCESS_NOT_FOUND = "Member group in the request is not present"
+INCOMPLETE_REQUEST = "Incomplete request sent"
+AGENT_LOCATION_DATA_NOT_FOUND = "No agent location data found"
+DUPLICATE_MOBILE = "Mobile already exists"
+DUPLICATE_EMAIL = "Email already exists"
+NO_SESSION = "Member is not logged in"
+NO_MOBILE = "Mandatry field mobile number is not set"
+NO_NAME = "Mandatry field name is not set"
+NO_REPORTING_MANAGER = "Reporting manager id not set"
+NO_GROUP_SENT = "Access Group details is not set"
+NO_DEPT_SENT = "Department id for memebr is not set"
+NO_REG_SENT = "Region id for member is not set"
+NO_ROLE_SENT = "Role for member is not set"
+MANAGER_NOT_FOUND = "Provided reporting manager does not exist"
+ROLE_NOT_FOUND = "Provided role id does not exist"
+MEMBER_NOT_FOUND = "Member with provided id not found"
+MEMBER_CREATION_FAILED = "Member creation failed"
+MEMBER_NOT_AUTHORIZED_FOR_CREATION = "Manager is not authorized to create member of the provided role"
+
+# Groups
+GROUP_NOT_FOUND = "No group found."
+BASE_GROUP_DELETE_ERROR = "Cannot delete the base group."
+PARENT_GROUP_NOT_FOUND = "Parent group not found."
+GROUP_NOT_CREATED = "Group cannot be created."
+GROUP_ALREADY_CREATED = "Group has already been created."
+TASK_GROUP_COUNT_TYPE_NOT_FOUND = "Group count type for tasks must be specified."
+GROUP_CREATED = "Group created."
+ATLEAST_ONE_MEMBER_REQUIRED_GROUP = "Group should have at least one member."
+DEPARTMENT_NOT_FOUND = "Department not found."
+REGION_NOT_FOUND = "Region not found."
+
+# Locations
+USER_NOT_FOUND = "No user found."
+LOCATIONS_NOT_FOUND = "No locations specified."
+BAD_REQUEST_ARGUMENTS = "Bad Request. Arguments invalid."
+TIMESTAMPS_NOT_FOUND = "Start or End timestamps are not specified."
+
+# Shifts
+SHIFT_STATUS_NOT_FOUND = "Shift status (ON / OFF) not found."
+SHIFT_LOCATION_NOT_FOUND = "Shift location not found."
+SHIFT_TIME_NOT_FOUND = "Shift time not found."
+
+# Tasks
+TASK_NOT_FOUND = "No task found."
+ATTEMPT_NOT_FOUND = "No attempt found."
+FAILED_TO_CREATE_ATTEMPT = "Failed to create the attempt."
+TASK_ADDED = "Task added."
+TASK_UPDATED = "Task updated."
+CANNOT_EDIT_COMPLETED_TASK = "Cannot edit completed task."
+CANNOT_DELETE_COMPLETED_TASK = "Cannot delete completed task."
+CANNOT_EDIT_FAILED_TASK = "Cannot edit failed task."
+CANNOT_DELETE_FAILED_TASK = "Cannot delete failed task."
+TASK_ALREADY_ATTEMPTED_NOT_EDITING = "Task has already been attempted. Cannot edit."
+TASK_ALREADY_ATTEMPTED_NOT_DELETING = "Task has already been attempted. Cannot delete."
+INVALID_DATE = "Invalid date."
+CUSTOMER_NOT_ASSOCIATED = "Customer not associated for task."
+INTERNAL_ERROR = "Something went wrong."
+
+# Users
+USER_ALREADY_EXIST = "User already exist."
+EMAIL_INVALID = "Email not valid."
+USER_LOGIN_FAILED = "Failed to login User."
+USER_ADD_FAILED = "Failed to add user."
+EMAIL_NOT_FOUND = "No Email specified."
+ADMIN_PRIVILEGES_REQUIRED = "Current user does not have admin privileges."
+MANAGER_PRIVILEGES_REQUIRED = "Current user does not have manager privileges."
+OTP_TYPE_NOT_FOUND = "Specify type of method to send OTP (Call or SMS or Email)."
+USER_PHONE_NOT_FOUND = "User does not have a phone number."
+USER_EMAIL_NOT_FOUND = "User does not have a email ID."
+USER_ALREADY_ADMIN = "User is already admin."
+ADMIN_CANNOT_REMOVE_SELF = "Admin cannot remove itself."
+USER_CANNOT_REMOVE_SELF = "You cannot remove yourself."
+USER_NOT_ADMIN = "Specified user is not admin."
+USER_AVATAR_NOT_FOUND = "No avatar found for the user."
+APP_TYPE_NOT_FOUND = "App type (Agent / Manager) should be specified."
+OTP_NOT_FOUND = "OTP should be specified."
+OTP_INVALID = "Invalid OTP."
+RESET_PASSWORD_TOKEN_NOT_FOUND = "Token not specified."
+RESET_PASSWORD_NOT_FOUND = "New password not specified."
+RESET_PASSWORD_TOKEN_NOT_VALID = "Token invalid."
+INVALID_FCM_ID = "FCM ID Invalid."
+SOURCE_NOT_FOUND = "No login source specified."
+USER_NOT_AGENT = "User is not an agent."
+USER_IS_AGENT = "User is an agent."
+MEMBER_ADDED = "Member added."
+MEMBER_UPDATED = "Member updated."
+MEMBER_DELETED = "Member deleted."
+
+
+# Uploads
+INVALID_FILE_TYPE = "File type invalid."
+INVALID_FILE_ID = "File ID invalid."
+
+# Versioning
+APP_VERSION_DEPRECATED = "App version deprecated."
+APP_VERSION_INVALID = "App version invalid."
+
+# Organizations
+ORGANIZATION_ALREADY_EXIST = "Organization already exist."
+ORGANIZATION_NOT_FOUND = "Organization not found."
+
+# Settings
+SETTINGS_UPDATE_FAILED = "Failed to update settings."
+SETTINGS_UPDATED = "Settings updated."
+SHIFT_START_GREATER = "Shift start time greater than end time."
+REGION_ALREADY_EXISTS = "Region with same name exists."
+REGION_NAME_NOT_FOUND = "Region name is mandatory."
+REGION_PARENT_NOT_FOUND = "Region parent not found."
