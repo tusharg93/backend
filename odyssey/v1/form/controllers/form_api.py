@@ -13,4 +13,5 @@ class RegisterAPI(Resource):
             register_form_data(request.json)
             return {"status": MSG_OK, "msg": "success"},CREATED
         except Exception,e:
+
             return {"status": INTERNAL_ERROR, "msg": "failure","error":str(e)},INTERNAL_SERVER_ERROR

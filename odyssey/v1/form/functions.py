@@ -5,6 +5,8 @@ import datetime
 from flask import render_template
 from odyssey.v1.common.constants import MAIL_USERNAME, SERVER_IP
 from odyssey.v1.common.functions import send_mail, generate_confirmation_token, confirm_token
+from odyssey.v1.auth.functions import get_member
+from odyssey.v1.form.customer_errors import UserExistsException
 
 def register_form_data(form_data):
     name    =   form_data.get('name',None)
@@ -15,6 +17,8 @@ def register_form_data(form_data):
     email   =   form_data.get('email',None)
     password =  form_data.get('password',None)
     official_email = form_data.get('official_email',True)
+    # if get_member(email):
+    #     raise UserExistsException
 
     gc_object = GolfCourseMaster(
         id = generate_id(),
@@ -43,10 +47,7 @@ def register_form_data(form_data):
         html=html_data,
     )
 
-
-
 def verify_email(query):
-
     token   =   query.get('token')
     email   =   confirm_token(token=token)
     user    =   GolfCourseMaster.query.filter(GolfCourseMaster.email == email).first()

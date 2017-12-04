@@ -40,7 +40,6 @@ class GolfCourseMaster(db.Model):
     password = db.Column(db.String)
     created_on = db.Column(db.DateTime,default=datetime.datetime.now)
     confirmed_on = db.Column(db.DateTime)
-
     def __init__(self, *args, **kwargs):
         self.id = kwargs.get('id')
         self.name = kwargs.get('name')

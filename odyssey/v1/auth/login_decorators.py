@@ -16,12 +16,12 @@ def login_required(callback):
 
     @wraps(callback)
     def wrapper(*args, **kwargs):
-        app.logger.warn("LOGIN WRAPPER. USER: {}. SESSION: {}".format(
-            g.user.id if g.user else "NULL",
-            session['user_id'] if 'user_id' in session else "NULL"
-        ))
+        # app.logger.warn("LOGIN WRAPPER. USER: {}. SESSION: {}".format(
+        #     g.user.id if g.user else "NULL",
+        #     session['user_id'] if 'user_id' in session else "NULL"
+        # ))
         if not (g.user and g.user.is_authenticated):
-            app.logger.warn("LOGIN WRAPPER. UNAUTHENTICATED: {}".format(session['user_id'] if 'user_id' in session else "NULL"))
+            # app.logger.warn("LOGIN WRAPPER. UNAUTHENTICATED: {}".format(session['user_id'] if 'user_id' in session else "NULL"))
             return unauthorized_view()
         return callback(*args, **kwargs)
 

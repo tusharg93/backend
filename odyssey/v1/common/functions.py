@@ -1,6 +1,7 @@
 import uuid
 from itsdangerous import URLSafeTimedSerializer
 from odyssey import app
+from config import SECURITY_PASSWORD_SALT
 from odyssey.v1.status_codes import *
 from odyssey.v1.status_messages import *
 
@@ -9,7 +10,7 @@ def generate_id():
 
 def generate_confirmation_token(email):
     serializer = URLSafeTimedSerializer(app.config['SECRET_KEY'])
-    return serializer.dumps(email, salt=app.config['SECURITY_PASSWORD_SALT'])
+    return serializer.dumps(email, salt=SECURITY_PASSWORD_SALT)
 
 
 def confirm_token(token, expiration=3600):
@@ -17,7 +18,7 @@ def confirm_token(token, expiration=3600):
     try:
         email = serializer.loads(
             token,
-            salt=app.config['SECURITY_PASSWORD_SALT'],
+            salt=SECURITY_PASSWORD_SALT,
             max_age=expiration
         )
     except:

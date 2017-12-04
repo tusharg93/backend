@@ -1,5 +1,5 @@
-from odyssey.v1.status_codes import *
-from odyssey.v1.status_messages import *
-errors = {
+from flask_restful import HTTPException
 
-}
+
+class UserExistsException(HTTPException):
+    pass

@@ -32,6 +32,8 @@ class Config(object):
     CSRF_ENABLED = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     SECRET_KEY = os.environ['APP_SECRET_KEY']
+    MAIL_USERNAME = MAIL_USERNAME
+    MAIL_PASSWORD = MAIL_PASSWORD
     APP_KEY = "BYTa4u9d-dsc8GM1LtnQEjs9RZVgZzRGyPQ2bMQw"
     SQLALCHEMY_DATABASE_URI = "postgresql+psycopg2://tushar:tushar1234@localhost/base_db"
     SQLALCHEMY_BINDS = {
