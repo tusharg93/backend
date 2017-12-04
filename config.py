@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+    # -*- coding: utf-8 -*-
 import datetime
 import os
 
@@ -16,8 +16,7 @@ MAIL_SERVER = 'smtp.gmail.com'
 MAIL_PORT = 587
 MAIL_USE_TLS = False
 MAIL_USE_SSL = True
-MAIL_USERNAME = 'tushar202793@gmail.com'
-MAIL_PASSWORD = 'qwert@123'
+
 
 SESSION_TYPE = 'sqlalchemy'
 SESSION_SQLALCHEMY_TABLE = 'login_sessions'
