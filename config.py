@@ -11,8 +11,6 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 
-SECURITY_PASSWORD_HASH = 'pbkdf2_sha512'
-SECURITY_PASSWORD_SALT = 'poiuytresdfghjkloiuytrescvbnml;p98765rdcvbnmloiuytr'
 #SECURITY_EMAIL_SENDER = 'no-reply@gmail.com'
 MAIL_SERVER = 'smtp.gmail.com'
 MAIL_PORT = 587
@@ -32,8 +30,10 @@ class Config(object):
     CSRF_ENABLED = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     SECRET_KEY = os.environ['APP_SECRET_KEY']
-    MAIL_USERNAME = MAIL_USERNAME
-    MAIL_PASSWORD = MAIL_PASSWORD
+    MAIL_USERNAME = os.environ['MAIL_USERNAME']
+    MAIL_PASSWORD = os.environ['MAIL_PASSWORD']
+    SECURITY_PASSWORD_HASH = os.environ['SECURITY_PASSWORD_HASH']
+    SECURITY_PASSWORD_SALT = os.environ['SECURITY_PASSWORD_SALT']
     APP_KEY = "BYTa4u9d-dsc8GM1LtnQEjs9RZVgZzRGyPQ2bMQw"
     SQLALCHEMY_DATABASE_URI = "postgresql+psycopg2://tushar:tushar1234@localhost/base_db"
     SQLALCHEMY_BINDS = {
