@@ -31,6 +31,6 @@ class AuthAPI(Resource):
 
         except:
             import traceback
-            #app.logger.error('Unknown Error in login'.format(str(traceback.print_exc())))
+            app.logger.error('Unknown Error in login'.format(str(traceback.print_exc())))
             return {"error": "some error occured"}, INTERNAL_SERVER_ERROR
 

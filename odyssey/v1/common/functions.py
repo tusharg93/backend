@@ -49,11 +49,11 @@ def send_mail(sender, receiver, name=None, subject=None, text=None, html=None, r
     from email.mime.multipart import MIMEMultipart
     from email.mime.application import MIMEApplication
     import smtplib
-    from config import MAIL_PASSWORD, MAIL_SERVER, MAIL_USERNAME
+    from config import MAIL_SERVER
     app = Flask(__name__)
     app.config.from_object(os.environ['APP_SETTINGS'])
-    LOGIN_USER_NAME = MAIL_USERNAME
-    LOGIN_PASSWD = MAIL_PASSWORD
+    LOGIN_USER_NAME = app.config['MAIL_USERNAME']
+    LOGIN_PASSWD = app.config['MAIL_PASSWORD']
     SMTP_SERVER = MAIL_SERVER
     try:
         message = MIMEMultipart('alternative')

@@ -22,6 +22,46 @@ SESSION_TYPE = 'sqlalchemy'
 SESSION_SQLALCHEMY_TABLE = 'login_sessions'
 PERMANENT_SESSION_LIFETIME = datetime.timedelta(days=365)
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': True,
+
+    'formatters': {
+        'console': {
+            'format': '[%(asctime)s][%(levelname)s] %(name)s '
+                      '%(filename)s:%(funcName)s:%(lineno)d | %(message)s \n',
+            'datefmt': '%Y-%m-%d %H:%M:%S %z',
+        },
+        # 'sentry': {
+        #     'format': '[%(asctime)s][%(levelname)s] %(name)s '
+        #               '%(filename)s:%(funcName)s:%(lineno)d | %(message)s',
+        #     'datefmt': '%Y-%m-%d %H:%M:%S %z',
+        # }
+    },
+
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'console'
+        },
+        # 'sentry': {
+        #     'level': 'INFO',
+        #     'class': 'raven.handlers.logging.SentryHandler',
+        #     # 'dsn': 'https://217ceffaab8c458d9fa97127b81b383d:7547c5b392674130be5082e78e9da806@sentry.io/121842',
+        #     'formatter': 'sentry'
+        # },
+    },
+
+    'loggers': {
+        '': {
+            'propagate': False,
+            'handlers': ['console'],
+            'level': 'DEBUG',
+        }
+    }
+}
+
 
 class Config(object):
     DEBUG = False
@@ -43,7 +83,7 @@ class Config(object):
     PERMANENT_SESSION_LIFETIME = PERMANENT_SESSION_LIFETIME
     SESSION_TYPE = SESSION_TYPE
     SESSION_SQLALCHEMY_TABLE = SESSION_SQLALCHEMY_TABLE
-
+    LOGGING = LOGGING
 
 class ProductionConfig(Config):
     DEBUG = False

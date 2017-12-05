@@ -32,6 +32,8 @@ def register_form_data(form_data):
     )
     if not official_email:
         gc_object.official_email = False
+    else:
+        gc_object.official_email = True
     db.session.add(gc_object)
     db.session.commit()
     token   =   generate_confirmation_token(email=email)

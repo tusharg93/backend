@@ -5,7 +5,7 @@ from flask import request, session, render_template
 from odyssey import db, login_manager_v1 as login_manager, app
 from odyssey.v1.auth.exceptions import *
 from odyssey.v1.models.golf_course_master import GolfCourseMaster
-
+from odyssey.v1.common.functions import generate_id
 
 @login_manager.user_loader
 def load_user(user_id):
