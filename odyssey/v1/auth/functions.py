@@ -39,7 +39,7 @@ def user_login(member_data):
         raise BadRequestException
     member = get_member(login_id)
     if not member:
-        #app.logger.info('[Login not found login id {}]'.format(login_id))
+        app.logger.info('[Login not found login id {}]'.format(login_id))
         raise UserNotFoundException
     if not member.is_email_verified:
         raise EmailNotVerifiedException
@@ -48,7 +48,7 @@ def user_login(member_data):
         create_session_key(member.id, session.sid)
         session['user_id'] = member.id
         return auth_token
-    #app.logger.info('[Login Incorrect : Login {} ]'.format(login_id))
+    app.logger.info('[Login Incorrect : Login {} ]'.format(login_id))
     raise UserWrongPasswordException
 
 # def login_check(member_id,source):

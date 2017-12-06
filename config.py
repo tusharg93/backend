@@ -45,6 +45,13 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'console'
         },
+    'gunicorn': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'formatter': 'verbose',
+            'filename': '/var/logs/gunicorn_supervisor.log',
+            'maxBytes': 1024 * 1024 * 100,  # 100 mb
+        },
         # 'sentry': {
         #     'level': 'INFO',
         #     'class': 'raven.handlers.logging.SentryHandler',
@@ -54,7 +61,7 @@ LOGGING = {
     },
 
     'loggers': {
-        '': {
+        'gunicorn.errors': {
             'propagate': False,
             'handlers': ['console'],
             'level': 'DEBUG',
@@ -73,13 +80,13 @@ class Config(object):
     MAIL_PASSWORD = os.environ['MAIL_PASSWORD']
     SECURITY_PASSWORD_HASH = os.environ['SECURITY_PASSWORD_HASH']
     SECURITY_PASSWORD_SALT = os.environ['SECURITY_PASSWORD_SALT']
-    APP_KEY = "BYTa4u9d-dsc8GM1LtnQEjs9RZVgZzRGyPQ2bMQw"
-    SQLALCHEMY_DATABASE_URI = "postgresql+psycopg2://tushar:tushar1234@localhost/base_db"
+    APP_KEY = os.environ['APP_KEY']
+    SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
     SQLALCHEMY_BINDS = {
-        'base_db': "postgresql+psycopg2://tushar:tushar1234@localhost/base_db",
+        'base_db': SQLALCHEMY_DATABASE_URI,
     }
-    DATABASE_USER ="tushar"
-    DATABASE_PASSWORD = "tushar1234"
+    DATABASE_USER =os.environ['DATABASE_USER']
+    DATABASE_PASSWORD = os.environ['PGPASSWORD']
     PERMANENT_SESSION_LIFETIME = PERMANENT_SESSION_LIFETIME
     SESSION_TYPE = SESSION_TYPE
     SESSION_SQLALCHEMY_TABLE = SESSION_SQLALCHEMY_TABLE

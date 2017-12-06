@@ -9,6 +9,7 @@ from flask_session import Session
 from flask_sqlalchemy import SQLAlchemy
 from urlparse import urlparse
 
+
 app = Flask(
     __name__,
     template_folder=os.path.join(os.getcwd(), 'templates'),
