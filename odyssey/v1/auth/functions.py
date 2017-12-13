@@ -1,5 +1,5 @@
 import datetime
-
+from pytz import timezone
 import phonenumbers
 from flask import request, session, render_template
 from odyssey import db, login_manager_v1 as login_manager, app
@@ -44,10 +44,13 @@ def user_login(member_data):
     if not member.is_email_verified:
         raise EmailNotVerifiedException
     if member.verify_password(password=password):
-        auth_token = None
+        flag  = False
+        if not member.activated_on:
+            member.activated_on = datetime.datetime.now(timezone('UTC'))
+            flag = True
         create_session_key(member.id, session.sid)
         session['user_id'] = member.id
-        return auth_token
+        return {"country": member.country if member.country else None,"activated":flag}
     app.logger.info('[Login Incorrect : Login {} ]'.format(login_id))
     raise UserWrongPasswordException
 

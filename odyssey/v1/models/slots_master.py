@@ -1,5 +1,6 @@
 from odyssey import db
 import datetime
+from pytz import timezone
 from odyssey.v1.common.constants import SLOTS_MASTER, GOLF_COURSE_MASTER, SEASON_MASTER, STATUS_MASTER,CATEGORY_MASTER
 class SlotsMaster(db.Model):
     __tablename__ = SLOTS_MASTER
@@ -20,7 +21,7 @@ class SlotsMaster(db.Model):
     rack_rate = db.Column(db.Float)
     season_id = db.Column(db.String,db.ForeignKey('{}.id'.format(SEASON_MASTER)))
     slot_status_id =  db.Column(db.String,db.ForeignKey('{}.id'.format(STATUS_MASTER)))
-    created_on  =   db.Column(db.DateTime,default=datetime.datetime.now)
+    created_on  =   db.Column(db.DateTime,default=datetime.datetime.now(timezone('UTC')))
 
     def __init__(self, *args, **kwargs):
         self.id = kwargs.get('id')

@@ -16,15 +16,21 @@ COUNTRIES_MASTER = 'countries_master'
 STATES_MASTER = 'states_master'
 NON_RETAIL_MASTER = 'non_retail_master'
 
-#slots db
+SLOT_TYPE_INFO = 'slot_type_info'
 SLOTS_KEY_COPY = 'slots_key_copy'
 SLOTS_MASTER = 'slots_master'
 SEASON_MASTER = 'season_master'
 STATUS_MASTER = 'status_master'
 CATEGORY_MASTER = 'category_master'
 COURSE_SEASON_RATES = 'course_season_rates'
+DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
+DAYS_TYPE_INFO = 'days_type_info'
+GC_RATES_INFO = 'gc_rates_info'
+GC_SEASONS_INFO = 'gc_seasons_info'
+GC_SPECIAL_DAYS_INFO = 'gc_special_days_info'
+GOLF_COURSE_DETAILS_MASTER = 'gc_details_master'
+RATE_TYPE  = 'rate_type'
 
-#transaction db
 TRANS_KEY_COPY = 'trans_key_copy'
 TRANSACTIONS_MASTER = 'transactions_master'
 TRANS_CATEGORY_MASTER = 'trans_category_master'
@@ -35,6 +41,6 @@ TRANS_STATUS_MASTER = 'trans_status_master'
 LOGIN_SESSIONS  =   'login_sessions'
 MEMBER_SESSION_KEYS = 'member_session_keys'
 
-MAIL_USERNAME = 'tushar202793@gmail.com'
-MAIL_PASSWORD = 'qwert@123'
-SERVER_IP   =   '52.221.210.175'
+#common
+DAYS_INFO = 'days_info'
+SERVER_IP   =   '52.77.252.230'

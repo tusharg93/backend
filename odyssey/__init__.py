@@ -22,6 +22,13 @@ app.config['SESSION_SQLALCHEMY'] = db
 
 
 from odyssey.v1.models.golf_course_master import GolfCourseMaster
+from odyssey.v1.models.days_type_info import DaysTypeInfo
+from odyssey.v1.models.rate_type import RateType
+from odyssey.v1.models.gc_seasons_info import GCSeasonsInfo
+from odyssey.v1.models.gc_rates_info import GCRatesInfo
+from odyssey.v1.models.gc_special_days_info import GCSpecialDaysInfo
+#from odyssey.v1.models.login_sessions import LoginSessions
+from odyssey.v1.models.member_session_keys import MemberSessionKeys
 # from odyssey.v1.models.course_facilities_master import CourseFacilitiesMaster
 # from odyssey.v1.models.rate_inclusions_master import RateInclusionsMaster
 # from odyssey.v1.models.course_images_master import CourseImageMaster
@@ -38,7 +45,7 @@ from odyssey.v1.models.golf_course_master import GolfCourseMaster
 #from odyssey.v1.models.slots_key_copy import SlotsKeyCopy
 #from odyssey.v1.models.trans_key_copy import TransKeyCopy
 # from odyssey.v1.models.slots_master import SlotsMaster
-# from odyssey.v1.models.season_master import SeasonsMaster
+from odyssey.v1.models.season_master import SeasonsMaster
 # from odyssey.v1.models.status_master import StatusMaster
 # from odyssey.v1.models.category_master import CategoryMaster
 # from odyssey.v1.models.course_season_rates import CourseSeasonRates

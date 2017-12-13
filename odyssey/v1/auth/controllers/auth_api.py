@@ -9,11 +9,11 @@ class AuthAPI(Resource):
     def post(self, auth_function):
         try:
 
-            auth_token = process_auth(auth_function)
+            response = process_auth(auth_function)
             return {
                        'status': 'OK',
-                       'auth_token': auth_token
-                   } if auth_token else {
+                       'data': response
+                   } if response else {
                 'status': 'OK'
             }, OK
 

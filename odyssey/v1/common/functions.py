@@ -216,4 +216,52 @@ def unauthorized_view():
 #     return ' '.join(text_string)
 #
 
+def add_default_values():
+    from odyssey.v1.models.rate_type import RateType
+    from odyssey.v1.models.days_type_info import DaysTypeInfo
+    from odyssey.v1.models.season_master import SeasonsMaster
+    from odyssey import db
+    rates = ['Online','Guest','Member']
+    days = ['Weekday','Weekend','Holiday','Closed']
+    seasons = ['Summer','Spring','Winter','Fall','Shoulder Season','Active/On Season','Inactive/Off Season']
 
+    for rate in rates:
+        obj = RateType(
+            id = generate_id(),
+            name=rate
+        )
+        db.session.add(obj)
+    for day in days:
+        obj = DaysTypeInfo(
+            id = generate_id(),
+            day_type=day
+        )
+        db.session.add(obj)
+    for season in seasons:
+        obj = SeasonsMaster(
+            id= generate_id(),
+            name=season
+        )
+        db.session.add(obj)
+
+    db.session.commit()
+    app.logger.info("Successfully added default values")
+
+def get_default_values():
+    from odyssey.v1.models.rate_type import RateType
+    from odyssey.v1.models.days_type_info import DaysTypeInfo
+    from odyssey.v1.models.season_master import SeasonsMaster
+    result = dict()
+    seasons = SeasonsMaster.query.all()
+    result['seasons'] = list()
+    for season in seasons:
+        result['seasons'].append(season.serialize)
+    rates = RateType.query.all()
+    result['rates'] = list()
+    for rate in rates:
+        result['rates'].append(rate.serialize)
+    days = DaysTypeInfo.query.all()
+    result['days'] = list()
+    for day in days:
+        result['days'].append(day.serialize)
+    return result

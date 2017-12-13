@@ -1,10 +1,10 @@
 import datetime
 from odyssey import db
-from odyssey.v1.common.constants import SEASON_MASTER
+from odyssey.v1.common.constants import RATE_TYPE
 
 
-class SeasonsMaster(db.Model):
-    __tablename__ = SEASON_MASTER
+class RateType(db.Model):
+    __tablename__ = RATE_TYPE
     __bind_key__ = 'base_db'
     id = db.Column(db.String, primary_key=True)
     name = db.Column(db.String)
@@ -17,5 +17,5 @@ class SeasonsMaster(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "name": self.name
-        }
+            "name":self.name
+            }
