@@ -90,8 +90,6 @@ def gc_fill_section_1(json_data, gc_id):
 
 def gc_fill__section_2(json_data, gc_id):
     from odyssey.v1.models.gc_special_days_info import GCSpecialDaysInfo
-    import time
-
     gc_object = GolfCourseMaster.query.filter(GolfCourseMaster.id == gc_id).first()
     if gc_object:
         weekdays = json_data.get('weekdays')
@@ -111,22 +109,19 @@ def gc_fill__section_2(json_data, gc_id):
                 day=day
             )
             if not full_day:
-                close_start_time = close.get('start_time')
-                close_start_time = datetime.datetime.strptime(close_start_time,'%H:%M').time()
-                close_end_time  =   close.get('end_time')
-                close_end_time  = datetime.datetime.strptime(close_end_time,'%H:%M').time()
-                special_day_obj.start_time =    close_start_time
-                special_day_obj.end_time   =    close_end_time
+                # close_start_time = close.get('start_time')
+                # close_start_time = datetime.datetime.strptime(close_start_time,'%H:%M').time()
+                # close_end_time  =   close.get('end_time')
+                # close_end_time  = datetime.datetime.strptime(close_end_time,'%H:%M').time()
+                # special_day_obj.start_time =    close_start_time
+                # special_day_obj.end_time   =    close_end_time
                 special_day_obj.full_day   =    False
             db.session.add(special_day_obj)
         db.session.commit()
-    return
-
 
 def gc_fill_section_3(json_data, gc_id):
     from odyssey.v1.models.season_master import SeasonsMaster
     from odyssey.v1.models.gc_seasons_info import GCSeasonsInfo
-    import time
     seasons = json_data.get('seasons')
     for season in seasons:
         season_id = season.get('id',None)

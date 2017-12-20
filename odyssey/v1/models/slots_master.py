@@ -1,37 +1,29 @@
 from odyssey import db
 import datetime
 from pytz import timezone
+from sqlalchemy.dialects.postgresql import TIME
 from odyssey.v1.common.constants import SLOTS_MASTER, GOLF_COURSE_MASTER, SEASON_MASTER, STATUS_MASTER,CATEGORY_MASTER
 class SlotsMaster(db.Model):
     __tablename__ = SLOTS_MASTER
     __bind_key__ = 'base_db'
-
-    # @declared_attr
-    # def __table_args__(cls):
-    #     return {'schema': _find_schema(cls)}
-
     id = db.Column(db.String, primary_key=True)
-    tee_time = db.Column(db.DateTime)
-    date  =  db.Column(db.DateTime)
-    gc_id = db.Column(db.String,db.ForeignKey('{}.id'.format(GOLF_COURSE_MASTER)))
-    slot_category_id = db.Column(db.String,db.ForeignKey('{}.id'.format(CATEGORY_MASTER)))
-    t1_avl = db.Column(db.Boolean)
-    t10_avl = db.Column(db.Boolean)
-    t19_avl = db.Column(db.Boolean)
-    rack_rate = db.Column(db.Float)
-    season_id = db.Column(db.String,db.ForeignKey('{}.id'.format(SEASON_MASTER)))
-    slot_status_id =  db.Column(db.String,db.ForeignKey('{}.id'.format(STATUS_MASTER)))
-    created_on  =   db.Column(db.DateTime,default=datetime.datetime.now(timezone('UTC')))
+    tee_time = db.Column(TIME())
+    date  =  db.Column(db.Date)
+    hole_9_price = db.Column(db.Float)
+    hole_18_price = db.Column(db.Float)
+    season_id = db.Column(db.String)
+    day_type = db.Column(db.String)
+    slot_status = db.Column(db.String)
+    min_golfers = db.Column(db.Integer)
 
-    def __init__(self, *args, **kwargs):
-        self.id = kwargs.get('id')
-        self.tee_time = kwargs.get('tee_time')
-        self.date = kwargs.get('date')
-        self.gc_id    = kwargs.get('gc_id')
-        self.slot_category_id = kwargs.get('category_id')
-        self.t1_avl = kwargs.get('t1_avl')
-        self.t10_avl = kwargs.get('t10_avl')
-        self.t19_avl = kwargs.get('t19_avl')
-        self.rack_rate = kwargs.get('rack_rate')
-        self.season_id = kwargs.get('season_id')
-        self.slot_status_id = kwargs.get('status_id')
+class SlotObject(object):
+    def __init__(self, slot_object):
+        self.id = slot_object['id']
+        self.tee_time = slot_object['tee_time']
+        self.date = slot_object['date']
+        self.hole_9_price = slot_object['hole_9_price']
+        self.hole_18_price = slot_object['hole_18_price']
+        self.season_id = slot_object['season_id']
+        self.day_type = slot_object['day_type']
+        self.slot_status = slot_object['slot_status']
+        self.min_golfers = slot_object['min_golfers']
