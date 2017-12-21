@@ -1,4 +1,3 @@
-import datetime
 from odyssey import db
 from sqlalchemy.dialects.postgresql import TIME, DATE
 from odyssey.v1.common.constants import GC_SPECIAL_DAYS_INFO, DAYS_TYPE_INFO, GOLF_COURSE_MASTER

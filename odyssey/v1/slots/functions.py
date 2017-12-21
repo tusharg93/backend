@@ -105,6 +105,9 @@ def generate_slots(gc_object, today):
 def get_week_type_slots(gc_id, season_id, day_type):
 
     table = get_gc_slot_table_object("gc_{}_slots".format(gc_id))
+    # holes = db.session.query(GolfCourseMaster.hole_9_flag, GolfCourseMaster.hole_18_flag).filter(GolfCourseMaster.id == gc_id).first()
+    # hole_9_flag = True if holes.hole_9_flag else False
+    # hole_18_flag = True if holes.hole_18_flag else False
     if not table:
         app.logger.error("Table doesnt exist")
         return None
@@ -141,6 +144,12 @@ def update_week_type_slots(gc_id, json_data):
         tee_time = slot.get('tee_time')
         hole_9_price = slot.get('hole_9_price')
         hole_18_price = slot.get('hole_18_price')
+        hole_9_flag = slot.get('hole_9_flag')
+        hole_18_flag = slot.get('hole_18_flag')
+        if not hole_9_flag:
+            hole_9_price = None
+        if not hole_18_flag:
+            hole_18_price = None
         slot_status = slot.get('slot_status',None)
         if not slot_status:
             slot_status = 'OPEN'
@@ -183,6 +192,12 @@ def update_date_wise_slot(gc_id, json_data):
         slot_id = slot.get('id')
         hole_9_price = slot.get('hole_9_price')
         hole_18_price = slot.get('hole_18_price')
+        hole_9_flag = slot.get('hole_9_flag')
+        hole_18_flag = slot.get('hole_18_flag')
+        if not hole_9_flag:
+            hole_9_price = None
+        if not hole_18_flag:
+            hole_18_price = None
         slot_status = slot.get('slot_status')
         if not slot_status:
             slot_status = 'OPEN'
