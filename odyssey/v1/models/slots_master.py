@@ -2,7 +2,7 @@ from odyssey import db
 import datetime
 from pytz import timezone
 from sqlalchemy.dialects.postgresql import TIME
-from odyssey.v1.common.constants import SLOTS_MASTER, GOLF_COURSE_MASTER, SEASON_MASTER, STATUS_MASTER,CATEGORY_MASTER
+from odyssey.v1.common.constants import SLOTS_MASTER, SEASON_MASTER, DAYS_TYPE_INFO
 class SlotsMaster(db.Model):
     __tablename__ = SLOTS_MASTER
     __bind_key__ = 'base_db'
@@ -11,8 +11,8 @@ class SlotsMaster(db.Model):
     date  =  db.Column(db.Date)
     hole_9_price = db.Column(db.Float)
     hole_18_price = db.Column(db.Float)
-    season_id = db.Column(db.String)
-    day_type = db.Column(db.String)
+    season_id = db.Column(db.String,db.ForeignKey('{}.id'.format(SEASON_MASTER)))
+    day_type = db.Column(db.String,db.ForeignKey('{}.id'.format(DAYS_TYPE_INFO)))
     slot_status = db.Column(db.String)
     min_golfers = db.Column(db.Integer)
 

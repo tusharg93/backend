@@ -28,6 +28,8 @@ DAYS_TYPE_INFO = 'days_type_info'
 GC_RATES_INFO = 'gc_rates_info'
 GC_SEASONS_INFO = 'gc_seasons_info'
 GC_SPECIAL_DAYS_INFO = 'gc_special_days_info'
+GC_HOLIDAYS_DAYS_INFO = 'gc_holidays_days_info'
+
 GOLF_COURSE_DETAILS_MASTER = 'gc_details_master'
 RATE_TYPE  = 'rate_type'
 
