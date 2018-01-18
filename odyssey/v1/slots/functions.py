@@ -19,12 +19,14 @@ def slot_generator(gc_id):
     generate_slots(gc_info, today)
     if diff < (gc_info.duration_live_slots * 30):
         next_year_end = year_end.replace(year=today.year + 1)
-        generate_slots(gc_info, next_year_end)
+        generate_slots(gc_info, next_year_end, False)
 
-def generate_slots(gc_object, today):
+def generate_slots(gc_object, today, current_flag=True):
     gc_id = gc_object.id
+    print today
     table_object   = get_gc_slot_table_object("gc_{}_slots".format(gc_id))
     if table_object is None:
+        print 'table not found hence creating'
         create_gc_slot_table(gc_id)
         table_object = get_gc_slot_table_object("gc_{}_slots".format(gc_id))
     gc_seasons_obj = GCSeasonsInfo.query.filter(GCSeasonsInfo.gc_id == gc_id).all()
@@ -43,13 +45,14 @@ def generate_slots(gc_object, today):
             continue
         start_date = start_date.replace(year=current_year)
         end_date = end_date.replace(year=current_year)
-        if start_date < today:
-            start_date = today
-        if end_date < today:
-            end_date = today
-        if start_date == end_date:
-            app.logger.info("This season has passed {}".format(season_id))
-            continue
+        if current_flag:
+            if start_date < today.date():
+                start_date = today.date()
+            if end_date < today.date():
+                end_date = today.date()
+            if start_date == end_date:
+                app.logger.info("This season has passed {}".format(season_id))
+                continue
         start_time = gc_season_details.start_time
         end_time = gc_season_details.end_time
         if not start_time or not end_time:
@@ -95,7 +98,9 @@ def generate_slots(gc_object, today):
                 start_date = start_date + timedelta(days=1)
         try:
             if len(insert_data) > 0:
+                print len(insert_data)
                 db.session.execute(table_object.insert(), insert_data, bind=db.get_engine(app, 'base_db'))
+                db.session.commit()
         except:
             import traceback
             app.logger.error(traceback.print_exc())

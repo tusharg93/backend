@@ -4,7 +4,7 @@ from odyssey.v1.auth.exceptions import *
 from odyssey.v1.form.functions import *
 from odyssey.v1.status_codes import *
 from odyssey.v1.status_messages import *
-from odyssey import app
+from odyssey import app, db
 
 
 class FillSectionsAPI(Resource):
@@ -25,6 +25,7 @@ class FillSectionsAPI(Resource):
             return {"status":MSG_OK,"msg":"success"},OK
         except:
             import traceback
+            db.session.rollback()
             app.logger.error('Unknown Error in login'.format(str(traceback.print_exc())))
             return {"error": "some error occured"}, INTERNAL_SERVER_ERROR
 

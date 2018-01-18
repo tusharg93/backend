@@ -62,6 +62,23 @@ class GolfCourseMaster(db.Model):
         #self.created_on = kwargs.get('created_on')
         self.hash_password(kwargs.get('password'))
 
+    @property
+    def dashboard_serialize(self):
+        return {
+            "id":self.id,
+            "name":self.name,
+            "is_hole_9":self.hole_9_flag,
+            "is_hole_18":self.hole_18_flag,
+            "tee_avl":self.tee_avl,
+            "currency":self.currency,
+            "time_zone":self.time_zone,
+            "online":self.is_online,
+            "member":self.is_member,
+            "guest":self.is_guest,
+            "live_slots_duration":self.duration_live_slots,
+            "weekdays":self.weekdays,
+            "weekends":self.weekends
+        }
 
     def hash_password(self, password):
         self.password = pwd_context.encrypt(password)

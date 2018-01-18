@@ -3,9 +3,10 @@ from sqlalchemy import MetaData
 from sqlalchemy.dialects.postgresql import TIME
 
 def create_gc_slot_table(gc_id):
-    query = 'CREATE TABLE IF NOT EXISTS "gc_{}_slots" AS SELECT * FROM slots_mater'.format(gc_id)
+    query = 'CREATE TABLE IF NOT EXISTS "gc_{}_slots" AS SELECT * FROM slots_master'.format(gc_id)
     db.session.execute(query, bind=db.get_engine(app, 'base_db'))
     db.session.commit()
+    db.get_binds()
 
 
 def get_gc_slot_table_object(table_name):

@@ -28,6 +28,7 @@ from odyssey.v1.models.gc_seasons_info import GCSeasonsInfo
 from odyssey.v1.models.gc_rates_info import GCRatesInfo
 from odyssey.v1.models.gc_special_days_info import GCSpecialDaysInfo
 #from odyssey.v1.models.login_sessions import LoginSessions
+from odyssey.v1.models.slots_master import SlotsMaster
 from odyssey.v1.models.member_session_keys import MemberSessionKeys
 # from odyssey.v1.models.course_facilities_master import CourseFacilitiesMaster
 # from odyssey.v1.models.rate_inclusions_master import RateInclusionsMaster

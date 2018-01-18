@@ -1,6 +1,6 @@
 from odyssey import db
 from sqlalchemy.dialects.postgresql import TIME, DATE
-from odyssey.v1.common.constants import GC_SPECIAL_DAYS_INFO, DAYS_TYPE_INFO, GOLF_COURSE_MASTER
+from odyssey.v1.common.constants import GC_SPECIAL_DAYS_INFO, DAYS_TYPE_INFO, GOLF_COURSE_MASTER, SEASON_MASTER
 
 
 class GCSpecialDaysInfo(db.Model):
@@ -8,6 +8,7 @@ class GCSpecialDaysInfo(db.Model):
     __bind_key__ = 'base_db'
     id = db.Column(db.String, primary_key=True)
     gc_id = db.Column(db.String,db.ForeignKey('{}.id'.format(GOLF_COURSE_MASTER)))
+    season_id = db.Column(db.String,db.ForeignKey('{}.id'.format(SEASON_MASTER)))
     day_type = db.Column(db.String,db.ForeignKey('{}.id'.format(DAYS_TYPE_INFO)))
     day = db.Column(db.String)
     full_day = db.Column(db.Boolean,default=True)
@@ -19,8 +20,17 @@ class GCSpecialDaysInfo(db.Model):
         self.day_type = kwargs.get('day_type')
         self.day   =   kwargs.get('day')
         self.full_day = kwargs.get('full_day')
-        self.start_time = kwargs.get('start_time')
-        self.end_time = kwargs.get('end_time')
 
+
+    @property
+    def serialize(self):
+        import time
+        return {
+            "season_id":self.season_id,
+            "day":self.day,
+            "full_day":self.full_day,
+            "start_time":time.strptime('%H:%M',self.start_time) if self.start_time else None,
+            "end_time":time.strptime('%H:%M',self.end_time) if self.end_time else None
+        }
 
 

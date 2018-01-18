@@ -1,5 +1,6 @@
 from odyssey.v1.models.golf_course_master import GolfCourseMaster
 from odyssey.v1.common.functions import generate_id
+from odyssey.v1.models.dynamic_tables import create_gc_slot_table
 from odyssey import db, app
 import datetime
 from flask import render_template
@@ -30,12 +31,13 @@ def register_form_data(form_data):
         email=email,
         password=password
     )
-    if not official_email:
-        gc_object.official_email = False
-    else:
-        gc_object.official_email = True
+    # if not official_email:
+    #     gc_object.official_email = False
+    # else:
+    #     gc_object.official_email = True
     db.session.add(gc_object)
     db.session.commit()
+    create_gc_slot_table(gc_object.id)
     token   =   generate_confirmation_token(email=email)
     verify_url  =   'http://{}/verify/{}'.format(SERVER_IP, token)
     with app.app_context():
@@ -86,7 +88,6 @@ def gc_fill_section_1(json_data, gc_id):
         gc_details.duration=int(live_slots_duration) if live_slots_duration else 3
         db.session.add(gc_details)
         db.session.commit()
-    return
 
 def gc_fill__section_2(json_data, gc_id):
     from odyssey.v1.models.gc_special_days_info import GCSpecialDaysInfo
@@ -109,12 +110,6 @@ def gc_fill__section_2(json_data, gc_id):
                 day=day
             )
             if not full_day:
-                # close_start_time = close.get('start_time')
-                # close_start_time = datetime.datetime.strptime(close_start_time,'%H:%M').time()
-                # close_end_time  =   close.get('end_time')
-                # close_end_time  = datetime.datetime.strptime(close_end_time,'%H:%M').time()
-                # special_day_obj.start_time =    close_start_time
-                # special_day_obj.end_time   =    close_end_time
                 special_day_obj.full_day   =    False
             db.session.add(special_day_obj)
         db.session.commit()
@@ -151,6 +146,7 @@ def gc_fill_section_3(json_data, gc_id):
 def gc_fill_section_4(json_data, gc_id):
     from odyssey.v1.models.gc_seasons_info import GCSeasonsInfo
     from odyssey.v1.models.gc_rates_info import GCRatesInfo
+    from odyssey.v1.models.gc_special_days_info import GCSpecialDaysInfo
     import time
     seasons_info  = json_data.get('seasons_info')
     for season_data in seasons_info:
@@ -172,11 +168,26 @@ def gc_fill_section_4(json_data, gc_id):
                 season_id=season_id,
                 gc_id=gc_id,
                 day_type=rate.get('day_type'),
-                hole_type=rate.get('hole_type'),
+                hole_9_price=rate.get('prcie_9'),
+                hole_18_price=rate.get('price_18'),
                 rate_type=rate.get('rate_type'),
                 price=rate.get('price')
             )
             db.session.add(gc_rates_obj)
+        special_day_obj = GCSpecialDaysInfo.query.filter(
+                        GCSpecialDaysInfo.gc_id == gc_id
+        ).first()
+        if special_day_obj and special_day_obj.full_day == False:
+            maintenance = season_data.get('maintenance',None)
+            if maintenance:
+                stime = maintenance.get('start_time',None)
+                etime = maintenance.get('end_time',None)
+                if stime and etime:
+                    special_day_obj.start_time = time.strptime(stime,'%H:%M')
+                    special_day_obj.end_time = time.strptime(etime,'%H:%M')
+                    special_day_obj.season_id = season_id
+                    db.session.add(special_day_obj)
+
     db.session.commit()
 
 
