@@ -75,7 +75,10 @@ def gc_fill_section_1(json_data, gc_id):
     guest_flag = json_data.get('guest', None)
     online_flag = json_data.get('online', None)
     live_slots_duration = json_data.get('duration', None)
-    gc_details = GolfCourseMaster.query.filter(GolfCourseMaster.id == gc_id).first()
+    if not gc_id:
+        gc_details = GolfCourseMaster.query.first()
+    else:
+        gc_details = GolfCourseMaster.query.filter(GolfCourseMaster.id == gc_id).first()
     if gc_details:
         gc_details.hole_9_flag = True if is_9_hole else False
         gc_details.hole_18_flag=True if is_18_hole else False
@@ -91,7 +94,10 @@ def gc_fill_section_1(json_data, gc_id):
 
 def gc_fill__section_2(json_data, gc_id):
     from odyssey.v1.models.gc_special_days_info import GCSpecialDaysInfo
-    gc_object = GolfCourseMaster.query.filter(GolfCourseMaster.id == gc_id).first()
+    if not gc_id:
+        gc_object = GolfCourseMaster.query.first()
+    else:
+        gc_object = GolfCourseMaster.query.filter(GolfCourseMaster.id == gc_id).first()
     if gc_object:
         weekdays = json_data.get('weekdays')
         weekends = json_data.get('weekends')
@@ -133,6 +139,8 @@ def gc_fill_section_3(json_data, gc_id):
             db.session.commit()
         season_start = datetime.datetime.strptime(season_start,"%m-%d").date()
         season_end   = datetime.datetime.strptime(season_end,"%m-%d").date()
+        if not gc_id:
+            gc_id = GolfCourseMaster.query.first().id
         gc_season_obj = GCSeasonsInfo(
             id =  generate_id(),
             gc_id=gc_id,
@@ -149,6 +157,8 @@ def gc_fill_section_4(json_data, gc_id):
     from odyssey.v1.models.gc_special_days_info import GCSpecialDaysInfo
     import time
     seasons_info  = json_data.get('seasons_info')
+    if not gc_id:
+        gc_id = GolfCourseMaster.query.first().id
     for season_data in seasons_info:
         season_id = season_data.get('id', None)
         start_time = season_data.get('start_time',None)

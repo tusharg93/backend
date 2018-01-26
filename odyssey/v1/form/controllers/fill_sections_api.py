@@ -10,7 +10,10 @@ from odyssey import app, db
 class FillSectionsAPI(Resource):
     def post(self, section):
         try:
-            gc_id = g.user.id
+            if g and g.user:
+                gc_id = g.user.id
+            else:
+                gc_id = None
             app.logger.info("Login id {}".format(gc_id))
             if section == '1':
                 gc_fill_section_1(request.json, gc_id)

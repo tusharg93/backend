@@ -35,24 +35,10 @@ from odyssey.v1.models.member_session_keys import MemberSessionKeys
 # from odyssey.v1.models.course_images_master import CourseImageMaster
 # from odyssey.v1.models.regions_master import RegionsMaster
 # from odyssey.v1.models.vendor_master import VendorMaster
-# from odyssey.v1.models.coupon_master import CouponMaster
-# from odyssey.v1.models.coupon_category_master import CouponCategoryMaster
-# from odyssey.v1.models.vendor_course_contract import VendorCourseContract
-# from odyssey.v1.models.vendor_course_invoice import VendorCourseInvoice
-#from odyssey.v1.models.countries_master import CountriesMaster
-#from odyssey.v1.models.states_master import StatesMaster
-#from odyssey.v1.models.cities_master import CitiesMaster
-#from odyssey.v1.models.non_retail_master import NonRetailMaster
-#from odyssey.v1.models.slots_key_copy import SlotsKeyCopy
-#from odyssey.v1.models.trans_key_copy import TransKeyCopy
 # from odyssey.v1.models.slots_master import SlotsMaster
 from odyssey.v1.models.season_master import SeasonsMaster
 # from odyssey.v1.models.status_master import StatusMaster
-# from odyssey.v1.models.category_master import CategoryMaster
-# from odyssey.v1.models.course_season_rates import CourseSeasonRates
-# from odyssey.v1.models.transactions_master import TransactionsMaster
-# from odyssey.v1.models.trans_status_master import TransStatusMaster
-# from odyssey.v1.models.trans_category_master import TransCategoryMaster
+
 
 db.create_all()
 db.session.commit()
