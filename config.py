@@ -45,13 +45,6 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'console'
         },
-    'gunicorn': {
-            'level': 'DEBUG',
-            'class': 'logging.handlers.RotatingFileHandler',
-            'formatter': 'verbose',
-            'filename': '/var/logs/gunicorn_supervisor.log',
-            'maxBytes': 1024 * 1024 * 100,  # 100 mb
-        },
         # 'sentry': {
         #     'level': 'INFO',
         #     'class': 'raven.handlers.logging.SentryHandler',
@@ -61,15 +54,13 @@ LOGGING = {
     },
 
     'loggers': {
-        'gunicorn.errors': {
+        '': {
             'propagate': False,
             'handlers': ['console'],
             'level': 'DEBUG',
         }
     }
 }
-
-
 class Config(object):
     DEBUG = False
     TESTING = False
