@@ -89,6 +89,7 @@ def generate_slots(gc_object, today, current_flag=True):
                     d['tee_time'] = datetime.strptime('{}:{}'.format(current_start.hour,current_start.minute),'%H:%M').time()
                     d['season_id'] = season_id
                     d['day_type'] = day_id
+                    d['day'] = current_start.strftime("%a")
                     d['hole_9_price'] = wk_9_price if day_id == weekday_id else we_9_price
                     d['hole_18_price'] = wk_18_price if day_id == weekday_id else we_18_price
                     d['min_golfers'] = 4
@@ -107,29 +108,28 @@ def generate_slots(gc_object, today, current_flag=True):
     app.logger.info("Successfully created slots for gc_id {}".format(gc_id))
 
 
-def get_week_type_slots(gc_id, season_id, day_type):
+def get_week_type_slots(gc_id, query_params):
 
     table = get_gc_slot_table_object("gc_{}_slots".format(gc_id))
-    # holes = db.session.query(GolfCourseMaster.hole_9_flag, GolfCourseMaster.hole_18_flag).filter(GolfCourseMaster.id == gc_id).first()
-    # hole_9_flag = True if holes.hole_9_flag else False
-    # hole_18_flag = True if holes.hole_18_flag else False
     if not table:
         app.logger.error("Table doesnt exist")
-        return None
-    day_type_id = DaysTypeInfo.query.filter(DaysTypeInfo.name == day_type).first().id
+        return list()
+    season_id = query_params.get("season_id")
+    day_type_id = query_params.get("day_type")
+    #day_type_id = DaysTypeInfo.query.filter(DaysTypeInfo.name == day_type).first().id
     next_date = (datetime.today() + timedelta(days=1)).date()
-    gc_season_info = db.session.query(GCSeasonsInfo.start_time,GCSeasonsInfo.end_time).filter(
-        GCSeasonsInfo.gc_id == gc_id,
-        GCSeasonsInfo.season_id == season_id
-    ).first()
-    total_week_type_slots = db.session.query(table.c.date,func.count('*').label('slots_count')).filter(table.c.season_id == season_id,
+    # gc_season_info = db.session.query(GCSeasonsInfo.start_time,GCSeasonsInfo.end_time).filter(
+    #     GCSeasonsInfo.gc_id == gc_id,
+    #     GCSeasonsInfo.season_id == season_id
+    # ).first()
+    total_week_type_slots = db.session.query(table.c.date.label('date'),func.count('*').label('slots_count')).filter(table.c.season_id == season_id,
                                                          table.c.day_type == day_type_id,
                                                          table.c.date >= next_date
                                                          ).group_by(table.c.date).limit(1)
     week_type_slots = db.session.query(table).filter(table.c.season_id == season_id,
                                                    table.c.day_type == day_type_id,
-                                                   table.c.tee_time >= gc_season_info.start_time,
-                                                   table.c.tee_time <= gc_season_info.end_time).order_by(table.c.date).limit(int(total_week_type_slots.slots_count))
+                                                   table.c.date == total_week_type_slots.date
+                                                     ).all()
     result = list()
     for slot in week_type_slots:
         d = dict()
@@ -143,6 +143,8 @@ def get_week_type_slots(gc_id, season_id, day_type):
 def update_week_type_slots(gc_id, json_data):
     day_type = json_data.get('day_type')
     season_id = json_data.get('season_id')
+    days = json_data.get('days')
+    days = tuple(days)
     slots = json_data.get('slots')
     table =  get_gc_slot_table_object("gc_{}_slots".format(gc_id))
     for slot in slots:
@@ -162,13 +164,13 @@ def update_week_type_slots(gc_id, json_data):
         #                                           table.c.season_id == season_id,
         #                                           table.c.day_type == day_type).all()
         db.session.execute(
-            "update \"gc_{}_slots\" set hole_9_price = {}, hole_18_price = {} , slot_status = '{}' where tee_time = '{}' and season_id = '{}' and day_type = '{}';"
-                .format(gc_id, hole_9_price, hole_18_price, slot_status, tee_time, season_id, day_type),
+            "update \"gc_{}_slots\" set hole_9_price = {}, hole_18_price = {} , slot_status = '{}' where tee_time = '{}' and season_id = '{}' and day_type = '{}' and day in {} ;"
+                .format(gc_id, hole_9_price, hole_18_price, slot_status, tee_time, season_id, day_type, days),
             bind=db.get_engine(app, 'base_db'))
         db.session.commit()
 
-def get_date_wise_slot(gc_id, date):
-
+def get_date_wise_slot(gc_id, query_data):
+    date = query_data.get("date")
     date_obj = datetime.strptime(date,'%Y-%m-%d')
     if not date:
         return None
@@ -195,15 +197,15 @@ def update_date_wise_slot(gc_id, json_data):
     slots = json_data.get('slots')
     for slot in slots:
         slot_id = slot.get('id')
-        hole_9_price = slot.get('hole_9_price')
-        hole_18_price = slot.get('hole_18_price')
-        hole_9_flag = slot.get('hole_9_flag')
-        hole_18_flag = slot.get('hole_18_flag')
+        hole_9_price = slot.get('hole_9_price',None)
+        hole_18_price = slot.get('hole_18_price',None)
+        hole_9_flag = slot.get('hole_9_flag',None)
+        hole_18_flag = slot.get('hole_18_flag',None)
         if not hole_9_flag:
             hole_9_price = None
         if not hole_18_flag:
             hole_18_price = None
-        slot_status = slot.get('slot_status')
+        slot_status = slot.get('slot_status',None)
         if not slot_status:
             slot_status = 'OPEN'
         db.session.execute(

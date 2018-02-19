@@ -11,8 +11,8 @@ class RegisterAPI(Resource):
     def post(self):
         try:
             register_form_data(request.json)
-            return {"status": MSG_OK, "msg": "success"},CREATED
+            return {"status": CREATED, "msg": "success"},CREATED
         except Exception,e:
             import traceback
             app.logger.info("Error in reigster api {}".format(traceback.print_exc()))
-            return {"status": INTERNAL_ERROR, "msg": "failure","error":str(e)},INTERNAL_SERVER_ERROR
+            return {"status": INTERNAL_SERVER_ERROR, "msg": "failure","error":str(e)},OK

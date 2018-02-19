@@ -2,12 +2,13 @@ from flask_restful import Resource
 from flask import g, request
 from odyssey.v1.auth.exceptions import *
 from odyssey.v1.form.functions import *
+from odyssey.v1.auth.login_decorators import login_required
 from odyssey.v1.status_codes import *
-from odyssey.v1.status_messages import *
 from odyssey import app, db
 
 
 class FillSectionsAPI(Resource):
+    method_decorators = [login_required]
     def post(self, section):
         try:
             if g and g.user:
@@ -24,11 +25,11 @@ class FillSectionsAPI(Resource):
             elif section == '4':
                 gc_fill_section_4(request.json,gc_id)
             else:
-                return {"status":"invalid request","msg":"failure"},NOT_FOUND
-            return {"status":MSG_OK,"msg":"success"},OK
+                return {"status":BAD_REQUEST,"msg":"failure"},OK
+            return {"status":OK,"msg":"success"},OK
         except:
             import traceback
             db.session.rollback()
             app.logger.error('Unknown Error in login'.format(str(traceback.print_exc())))
-            return {"error": "some error occured"}, INTERNAL_SERVER_ERROR
+            return {"status":INTERNAL_SERVER_ERROR, "error": "some error occured"}, OK
 

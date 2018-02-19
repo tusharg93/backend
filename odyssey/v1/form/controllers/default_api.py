@@ -12,4 +12,4 @@ class DefaultAPI(Resource):
             result    =   get_default_values()
             return {"status": MSG_OK, "msg": "success", "data":result},OK
         except Exception, e:
-            return {"status": INTERNAL_ERROR, "msg": "failure","error":str(e)},INTERNAL_SERVER_ERROR
+            return {"status": INTERNAL_ERROR, "msg": "failure","error":str(e)},OK

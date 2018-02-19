@@ -111,6 +111,7 @@ def user_logout(member_id, clear_all=False):
 def get_current_user():
     if 'user_id' in session:
         return GolfCourseMaster.query.get(session['user_id'])
+    return None
 #
 # def dashboard_logout():
 #

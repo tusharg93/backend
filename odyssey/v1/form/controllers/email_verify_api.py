@@ -9,12 +9,11 @@ from flask import request
 class EmailVerifyAPI(Resource):
 
     def get(self):
-
         try:
             result    =   verify_email(request.args)
             if result:
                 return {"status": MSG_OK, "msg": "success"},OK
             else:
-                return {"status":UNAUTHORIZED,"msg":"failure"},UNAUTHORIZED
+                return {"status":UNAUTHORIZED,"msg":"failure"},OK
         except Exception, e:
-            return {"status": INTERNAL_ERROR, "msg": "failure","error":str(e)},INTERNAL_SERVER_ERROR
+            return {"status": INTERNAL_SERVER_ERROR, "msg": "failure","error":str(e)},OK

@@ -9,6 +9,7 @@ class SlotsMaster(db.Model):
     id = db.Column(db.String, primary_key=True)
     tee_time = db.Column(TIME())
     date  =  db.Column(db.Date)
+    day = db.Column(db.String)
     hole_9_price = db.Column(db.Float)
     hole_18_price = db.Column(db.Float)
     season_id = db.Column(db.String,db.ForeignKey('{}.id'.format(SEASON_MASTER)))
@@ -25,5 +26,6 @@ class SlotObject(object):
         self.hole_18_price = slot_object['hole_18_price']
         self.season_id = slot_object['season_id']
         self.day_type = slot_object['day_type']
+        self.day = slot_object['day']
         self.slot_status = slot_object['slot_status']
         self.min_golfers = slot_object['min_golfers']

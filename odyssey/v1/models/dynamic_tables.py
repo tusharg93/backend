@@ -15,6 +15,7 @@ def get_gc_slot_table_object(table_name):
         table_name,
         MetaData(),
         db.Column('id', db.String, primary_key=True),
+        db.Column('day',db.String),
         db.Column('date', db.Date),
         db.Column('tee_time', TIME()),
         db.Column('day_type',db.String),
