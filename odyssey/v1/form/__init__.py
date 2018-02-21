@@ -5,6 +5,7 @@ from odyssey.v1.form.controllers.email_verify_api import EmailVerifyAPI
 from odyssey.v1.form.controllers.default_api import DefaultAPI
 from odyssey.v1.form.controllers.fill_sections_api import FillSectionsAPI
 from odyssey.v1.form.controllers.image_upload_api import ImageUploadAPI
+from odyssey.v1.form.controllers.gc_profile_api import GCProfileAPI
 
 forms_blueprint_v1 = Blueprint('forms_blueprint_v1', __name__)
 api = Api(forms_blueprint_v1, prefix='/api/v1/forms')
