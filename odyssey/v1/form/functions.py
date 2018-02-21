@@ -1,4 +1,5 @@
 from odyssey.v1.models.golf_course_master import GolfCourseMaster
+from odyssey.v1.models.vendor_master import VendorMaster
 from odyssey.v1.common.functions import generate_id
 from odyssey.v1.models.dynamic_tables import create_gc_slot_table
 from odyssey import db, app
@@ -35,6 +36,8 @@ def register_form_data(form_data):
     #     gc_object.official_email = False
     # else:
     #     gc_object.official_email = True
+    token = gc_object.get_auth_token()
+    gc_object.auth_token = token
     db.session.add(gc_object)
     db.session.commit()
     create_gc_slot_table(gc_object.id)
@@ -53,12 +56,15 @@ def register_form_data(form_data):
 
 def verify_email(query):
     token   =   query.get('token')
+    user_type = query.get("type",None)
     email   =   confirm_token(token=token)
     if email:
-        user    =   GolfCourseMaster.query.filter(GolfCourseMaster.email == email).first()
+        if not user_type or user_type == "golf_course":
+            user    =   GolfCourseMaster.query.filter(GolfCourseMaster.email == email).first()
+        else:
+            user    =   VendorMaster.query.filter(VendorMaster.email == email).first()
         if user:
             user.is_email_verified = True
-            user.confirmed_on = datetime.datetime.now()
             db.session.add(user)
             db.session.commit()
             return True
@@ -92,7 +98,7 @@ def gc_fill_section_1(json_data, gc_id):
         db.session.add(gc_details)
         db.session.commit()
 
-def gc_fill__section_2(json_data, gc_id):
+def gc_fill_section_2(json_data, gc_id):
     from odyssey.v1.models.gc_special_days_info import GCSpecialDaysInfo
     if not gc_id:
         gc_object = GolfCourseMaster.query.first()
@@ -201,9 +207,99 @@ def gc_fill_section_4(json_data, gc_id):
     db.session.commit()
 
 
+def gc_fill_section_8(json_data, gc_id):
+    gc_object = GolfCourseMaster.query.filter(GolfCourseMaster.id == gc_id).first()
+    price_inclusions = json_data.get("price_includes",None)
+    cancel_policy = json_data.get("cancel_policy",None)
+    tnc = json_data.get("tnc",None)
+    min_weekdays = json_data.get("min_weekdays",0)
+    min_weekends = json_data.get("min_weekends",0)
+    gc_object.price_includes = price_inclusions
+    gc_object.cancel_policy = cancel_policy
+    gc_object.tnc = tnc
+    gc_object.min_weekdays = min_weekdays
+    gc_object.min_weekends = min_weekends
+    db.session.add(gc_object)
+    db.session.commit()
+
+def fill_rentals_addons(json_data, gc_id):
+    from odyssey.v1.models.extras_info import ExtrasInfo
+    for data in json_data:
+        name  = data.get("name",None)
+        price = data.get("price",None)
+        if name and price:
+            obj = ExtrasInfo(
+                id=generate_id(),
+                name=data.get("name"),
+                price=float(data.get("price")),
+                gc_id = gc_id
+            )
+            db.session.add(obj)
+    db.session.commit()
 
 
+def fill_gc_profile(json_data, gc_id):
+    from odyssey.v1.models.golf_course_master import GolfCourseMaster
+    gc_object = GolfCourseMaster.query.get(gc_id)
+    description = json_data.get('about',None)
+    course_info = json_data.get('course_info',None)
+    facilities = json_data.get('facilities',None)
+    website_url = json_data.get('website_url',None)
+    contact_name = json_data.get('contact_name',None)
+    designation = json_data.get('designation',None)
+    contact_mobile = json_data.get('contact_mobile',None)
+    address_1 = json_data.get('address_line_1',None)
+    address_2 = json_data.get('address_line_2',None)
+    coord = json_data.get('coordinates',None)
+    lat  = None
+    long = None
+    if coord:
+        lat = coord.get('latitude',None)
+        long = coord.get('longitude',None)
+    weekday_hrs = json_data.get('weekday_hrs',None)
+    weekday_start_time = weekday_hrs.get('start_time',None)
+    weekday_end_time   = weekday_hrs.get('end_time',None)
+    if weekday_start_time and weekday_end_time:
+        weekday_hrs_string = weekday_start_time + " to " + weekday_end_time
+    else:
+        weekday_hrs_string  = None
+    weekend_hrs = json_data.get('weekday_hrs', None)
+    weekend_start_time = weekend_hrs.get('start_time', None)
+    weekend_end_time = weekend_hrs.get('end_time', None)
+    if weekend_start_time and weekend_end_time:
+        weekend_hrs_string = weekend_start_time + " to " + weekend_end_time
+    else:
+        weekend_hrs_string = None
+    facebook_url = json_data.get('fb_url',None)
+    twitter_url = json_data.get('twitter_url',None)
+    insta_url = json_data.get('insta_url',None)
+    gc_object.description = description
+    gc_object.course_info = course_info
+    gc_object.facilities = facilities
+    gc_object.website_url = website_url
+    gc_object.contact_name = contact_name
+    gc_object.contact_mobile = contact_mobile
+    gc_object.designation = designation
+    gc_object.address_1 = address_1
+    gc_object.address_2 = address_2
+    gc_object.lat = lat
+    gc_object.long = long
+    gc_object.weekday_hrs = weekday_hrs_string
+    gc_object.weekend_hrs = weekend_hrs_string
+    gc_object.facebook_url = facebook_url
+    gc_object.twitter_url = twitter_url
+    gc_object.insta_url = insta_url
+    db.session.add(gc_object)
+    db.session.commit()
 
-
-
-
+def image_upload(user_id, request):
+    from odyssey.v1.common.functions import upload_image_to_s3
+    user_type = request.headers.get('source')
+    if not user_type or user_type == "golf_course":
+        user_object = GolfCourseMaster.query.get(user_id)
+    else:
+        user_object = VendorMaster.query.get(user_id)
+    img_url = upload_image_to_s3(request.files)
+    user_object.logo_url = img_url
+    db.session.add(user_object)
+    db.session.commit()

@@ -265,3 +265,17 @@ def get_default_values():
     for day in days:
         result['days'].append(day.serialize)
     return result
+
+def upload_image_to_s3(image):
+    from odyssey.v1.common.helpers import UploadToS3Helper
+    picture = image.get('image')
+    if picture:
+        bucket_name = app.config.get('AWS_BUCKET_URL')
+        app.logger.info("upload_image: bucket_name {}".format(bucket_name))
+        upload_helper = UploadToS3Helper(bucket_name)
+        picture_id = str(generate_id())
+        app.logger.info("IMAGE: id: {} : content_type :{}".format(picture_id, picture.content_type ))
+        url = upload_helper.upload('{}_{}'.format(picture_id, picture.filename), picture.read(), picture.content_type)
+        return url
+
+

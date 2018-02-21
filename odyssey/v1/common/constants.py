@@ -29,7 +29,7 @@ GC_RATES_INFO = 'gc_rates_info'
 GC_SEASONS_INFO = 'gc_seasons_info'
 GC_SPECIAL_DAYS_INFO = 'gc_special_days_info'
 GC_HOLIDAYS_DAYS_INFO = 'gc_holidays_days_info'
-
+GC_CLOSED_DAYS_INFO = 'gc_closed_days_info'
 GOLF_COURSE_DETAILS_MASTER = 'gc_details_master'
 RATE_TYPE  = 'rate_type'
 
@@ -42,7 +42,9 @@ TRANS_STATUS_MASTER = 'trans_status_master'
 #auth
 LOGIN_SESSIONS  =   'login_sessions'
 MEMBER_SESSION_KEYS = 'member_session_keys'
+VENDOR_SESSION_KEYS = 'vendor_session_keys'
 
 #common
+EXTRAS_INFO = "extras_info"
 DAYS_INFO = 'days_info'
 SERVER_IP   =   '52.77.252.230'

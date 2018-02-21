@@ -5,6 +5,7 @@ from flask import request, session, render_template
 from odyssey import db, login_manager_v1 as login_manager, app
 from odyssey.v1.auth.exceptions import *
 from odyssey.v1.models.golf_course_master import GolfCourseMaster
+from odyssey.v1.models.vendor_master import VendorMaster
 from odyssey.v1.common.functions import generate_id
 
 @login_manager.user_loader
@@ -23,34 +24,48 @@ def get_member(login_id):
 
     ).first()
 
+def get_vendor(login_id):
+    vendor = VendorMaster.query.filter(VendorMaster.email == login_id, VendorMaster.is_deleted == False).first()
+    if vendor:
+        return vendor
+    return None
+
 def process_auth(auth_function):
     if auth_function.lower() == "login":
         return user_login(request.form)
     elif auth_function.lower() == "logout":
         if session.get('user_id'):
-            user_logout(session.get('user_id'))
+            source = request.form.get("source",None)
+            user_logout(session.get('user_id'),source)
 
 
 def user_login(member_data):
 
     login_id = member_data.get('login_id')
     password = member_data.get('password')
+    source = member_data.get('source',None)
     if not (login_id and password):
         raise BadRequestException
-    member = get_member(login_id)
+    if not source or source == "golf_course":
+        member = get_member(login_id)
+    else:
+        member = get_vendor(login_id)
     if not member:
         app.logger.info('[Login not found login id {}]'.format(login_id))
         raise UserNotFoundException
     if not member.is_email_verified:
         raise EmailNotVerifiedException
     if member.verify_password(password=password):
-        flag  = False
+        flag  = True
         if not member.activated_on:
             member.activated_on = datetime.datetime.now(timezone('UTC'))
-            flag = True
-        create_session_key(member.id, session.sid)
-        session['user_id'] = member.id
-        return {"country": member.country if member.country else None,"activated":flag}
+            flag = False
+        # if not source or source == "golf_course":
+        #     create_session_key(member.id, session.sid)
+        # else:
+        #     create_vendor_session_key(member.id,session.sid)
+        # session['user_id'] = member.id
+        return {"country": member.country if member.country else None,"activated":flag,"id":member.id,"token":member.auth_token}
     app.logger.info('[Login Incorrect : Login {} ]'.format(login_id))
     raise UserWrongPasswordException
 
@@ -64,6 +79,17 @@ def user_login(member_data):
 #         db.session.delete(check_in_login)
 #         db.session.commit()
 
+def create_vendor_session_key(member_id, session_id):
+    from odyssey.v1.models.member_session_keys import MemberSessionKeys
+    if not MemberSessionKeys.query.filter(MemberSessionKeys.session_id == session_id).count():
+        member_session_key = MemberSessionKeys(
+            uuid=generate_id(),
+            member_id=member_id,
+            session_id=session_id,
+        )
+        db.session.add(member_session_key)
+        db.session.commit()
+
 def create_session_key(member_id, session_id):
     from odyssey.v1.models.member_session_keys import MemberSessionKeys
     if not MemberSessionKeys.query.filter(MemberSessionKeys.session_id == session_id).count():
@@ -76,13 +102,19 @@ def create_session_key(member_id, session_id):
         db.session.commit()
 
 
-def user_logout(member_id, clear_all=False):
+def user_logout(member_id, source = None):
     from odyssey.v1.models.member_session_keys import MemberSessionKeys
+    from odyssey.v1.models.vendor_session_keys import VendorSessionKeys
     from odyssey.v1.models.login_sessions import LoginSessions
-    if member_id:
+    if member_id and (not source or source == "golf_course"):
         MemberSessionKeys.query.filter(
             MemberSessionKeys.session_id == session.sid,
             MemberSessionKeys.member_id == member_id
+        ).delete()
+    else:
+        VendorSessionKeys.query.filter(
+            VendorSessionKeys.session_id == session.sid,
+            VendorSessionKeys.member_id == member_id
         ).delete()
         LoginSessions.query.filter(
             LoginSessions.session_id == '{}:{}'.format(
@@ -109,8 +141,14 @@ def user_logout(member_id, clear_all=False):
 #         app.logger.error("Error in clear_cookies")
 
 def get_current_user():
-    if 'user_id' in session:
-        return GolfCourseMaster.query.get(session['user_id'])
+    id = request.headers.get('id')
+    token = request.headers.get('token')
+    source = request.headers.get('source')
+    if id and token:
+        if not source or source == "golf_course":
+            return GolfCourseMaster.query.filter(GolfCourseMaster.id == id,GolfCourseMaster.auth_token == token).first()
+        else:
+            return VendorMaster.query.filter(VendorMaster.id == id, VendorMaster.auth_token == token).first()
     return None
 #
 # def dashboard_logout():

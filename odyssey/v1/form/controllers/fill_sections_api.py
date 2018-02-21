@@ -19,11 +19,15 @@ class FillSectionsAPI(Resource):
             if section == '1':
                 gc_fill_section_1(request.json, gc_id)
             elif section == '2':
-                gc_fill__section_2(request.json,gc_id)
+                gc_fill_section_2(request.json, gc_id)
             elif section == '3':
-                gc_fill_section_3(request.json,gc_id)
+                gc_fill_section_3(request.json, gc_id)
             elif section == '4':
-                gc_fill_section_4(request.json,gc_id)
+                gc_fill_section_4(request.json, gc_id)
+            elif section == '8':
+                gc_fill_section_8(request.json, gc_id)
+            elif section == 'rentals':
+                fill_rentals_addons(request.json, gc_id)
             else:
                 return {"status":BAD_REQUEST,"msg":"failure"},OK
             return {"status":OK,"msg":"success"},OK

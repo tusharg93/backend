@@ -18,19 +18,19 @@ class AuthAPI(Resource):
             }, OK
 
         except BadRequestException:
-            return {"error": "invalid request"}, BAD_REQUEST
+            return {"status":BAD_REQUEST,"error": "invalid request"}, BAD_REQUEST
 
         except UserNotFoundException:
-            return {"error": "user not found"}, NOT_FOUND
+            return {"status":NOT_FOUND,"error": "user not found"}, OK
 
         except UserWrongPasswordException:
-            return {"error": "invalid login details"}, UNAUTHORIZED
+            return {"status":UNAUTHORIZED,"error": "invalid login details"}, UNAUTHORIZED
 
         except EmailNotVerifiedException:
-            return {"error": "email not verified"}, UNAUTHORIZED
+            return {"status":UNAUTHORIZED, "error": "email not verified"}, UNAUTHORIZED
 
         except:
             import traceback
             app.logger.error('Unknown Error in login'.format(str(traceback.print_exc())))
-            return {"error": "some error occured"}, INTERNAL_SERVER_ERROR
+            return {"status":INTERNAL_SERVER_ERROR, "error": "some error occured"}, OK
 

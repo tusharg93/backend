@@ -192,7 +192,6 @@ def get_date_wise_slot(gc_id, query_data):
     return result
 
 def update_date_wise_slot(gc_id, json_data):
-
     table = get_gc_slot_table_object("gc_{}_slots".format(gc_id))
     slots = json_data.get('slots')
     for slot in slots:
@@ -214,3 +213,95 @@ def update_date_wise_slot(gc_id, json_data):
             bind=db.get_engine(app, 'base_db'))
     if len(slots) > 0:
         db.session.commit()
+
+def apply_holiday(gc_id, dates):
+    from odyssey.v1.models.gc_rates_info import GCRatesInfo
+    from odyssey.v1.models.days_type_info import DaysTypeInfo
+    table = get_gc_slot_table_object("gc_{}_slots".format(gc_id))
+    weekend_id = DaysTypeInfo.query.filter(DaysTypeInfo.day_type =="Weekend").first().id
+    try:
+        for date in dates:
+            table_data = db.session.query(table.c.season_id,table.c.day_type).filter(table.c.date == date).first()
+            if table_data.day_type == weekend_id:
+                continue
+            else:
+                weekend_rate_info = GCRatesInfo.query.filter(GCRatesInfo.season_id == table_data.season_id,
+                                                             GCRatesInfo.gc_id == gc_id,
+                                                             GCRatesInfo.day_type == weekend_id).first()
+                db.session.execute("update \"gc_{}_slots\" set hole_9_price = {}, hole_18_price = {} where date = {} ;".format(
+                    gc_id, weekend_rate_info.hole_9_price, weekend_rate_info.hole_18_price, date),bind=db.get_engine(app, 'base_db'))
+                db.session.commit()
+    except:
+        app.logger.info("error in holiday apply")
+        import traceback
+        db.session.rollback()
+        app.logger.error(traceback.print_exc())
+
+def update_holiday_days(gc_id, json_data):
+    from odyssey.v1.models.gc_holidays_info import GCHolidaysDaysInfo
+    data = json_data.get("data")
+    dates = list()
+    for info in data:
+        date = info.get("date")
+        date = datetime.strptime("%Y-%m-%d",date)
+        name = info.get("name")
+        all_flag = info.get("universal",False)
+        obj = GCHolidaysDaysInfo(
+            id = generate_id(),
+            date=date,
+            name=name,
+            all=all_flag
+        )
+        db.session.add(obj)
+        dates.append(date)
+    db.session.commit()
+    apply_holiday(gc_id, dates)
+
+def apply_closed(gc_id, dates):
+    try:
+        for date in dates:
+            d = date[0]
+            t = date[1]
+            if t:
+                db.session.execute("update \"gc_{}_slots\" set slot_status = 'CLOSED' where date = {} and tee_time < {} ;".format(
+                    gc_id,d,t),bind=db.get_engine(app, 'base_db'))
+            else:
+                db.session.execute(
+                    "update \"gc_{}_slots\" set slot_status = 'CLOSED' where date = {} ;".format(
+                        gc_id, d), bind=db.get_engine(app, 'base_db'))
+            db.session.commit()
+    except:
+        app.logger.info("error in closed apply")
+        import traceback
+        db.session.rollback()
+        app.logger.error(traceback.print_exc())
+
+def update_closed_days(gc_id, json_data):
+    import time
+    from odyssey.v1.models.gc_closed_days_info import GCClosedDaysInfo
+    data = json_data.get("data")
+    dates = list()
+    for info in data:
+        date = info.get("date")
+        full_day = info.get("full_day",False)
+        start_time = None
+        if full_day:
+            obj = GCClosedDaysInfo(
+                id=generate_id(),
+                date= date,
+                full_day=full_day,
+                start_time=None
+            )
+        else:
+            start_time = info.get('start_time')
+            start_time = time.strptime(start_time, '%H:%M')
+            obj = GCClosedDaysInfo(
+                id=generate_id(),
+                date=date,
+                full_day=full_day,
+                start_time=start_time
+            )
+        db.session.add(obj)
+        dates.append([date,start_time])
+    db.session.commit()
+    apply_closed(gc_id, dates)

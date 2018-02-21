@@ -10,12 +10,14 @@ class GCHolidaysDaysInfo(db.Model):
     gc_id = db.Column(db.String,db.ForeignKey('{}.id'.format(GOLF_COURSE_MASTER)))
     date = db.Column(db.Date)
     name = db.Column(db.String)
+    universal = db.Column(db.Boolean,default=False)
 
     def __init__(self, *args, **kwargs):
         self.id = kwargs.get('id')
         self.date = kwargs.get('date')
         self.gc_id   =   kwargs.get('gc_id')
         self.name = kwargs.get('name')
+        self.universal = kwargs.get('all')
 
 
 

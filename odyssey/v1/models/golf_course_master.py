@@ -1,10 +1,11 @@
 import datetime
-from odyssey import db
+from odyssey import db, app
 from pytz import timezone
 from odyssey.v1.common.constants import GOLF_COURSE_MASTER
 from passlib.apps import custom_app_context as pwd_context
-from sqlalchemy.sql.schema import Column
-from sqlalchemy.sql.schema import ForeignKey
+from sqlalchemy.dialects.postgresql import JSON
+from itsdangerous import URLSafeSerializer
+login_serializer = URLSafeSerializer(app.secret_key)
 
 class GolfCourseMaster(db.Model):
     __tablename__ = GOLF_COURSE_MASTER
@@ -26,12 +27,30 @@ class GolfCourseMaster(db.Model):
     duration_live_slots = db.Column(db.Integer)
     mobile  =   db.Column(db.String)
     country_code = db.Column(db.String)
-    description = db.Column(db.String)
-    address = db.Column(db.String)
-    location = db.Column(db.String)
+    description = db.Column(JSON)
+    address_1 = db.Column(db.String)
+    address_2  = db.Column(db.String)
+    lat = db.Column(db.String)
+    long = db.Column(db.String)
     logo_url = db.Column(db.String)
-    established = db.Column(db.DateTime)
+    facilities = db.Column(JSON)
+    weekday_hrs = db.Column(db.String)
+    weekend_hrs = db.Column(db.String)
+    course_info = db.Column(JSON)
+    contact_name = db.Column(db.String)
+    contact_mobile = db.Column(db.String)
+    contact_country_code = db.Column(db.String)
+    website_url = db.Column(db.String)
+    facebook_url = db.Column(db.String)
+    twitter_url  = db.Column(db.String)
+    insta_url = db.Column(db.String)
     email = db.Column(db.String)
+    min_weekdays = db.Column(db.Integer)
+    min_weekends = db.Column(db.Integer)
+    cancel_policy = db.Column(db.String)
+    tnc         = db.Column(db.String)
+    price_includes = db.Column(JSON)
+    auth_token = db.Column(db.String)
     is_email_verified = db.Column(db.Boolean,default=False)
     is_deleted     = db.Column(db.Boolean,default=False)
     official_email = db.Column(db.Boolean,default=False)
@@ -46,21 +65,9 @@ class GolfCourseMaster(db.Model):
         self.city = kwargs.get('city')
         self.mobile = kwargs.get('mobile')
         self.country_code = kwargs.get('country_code')
-        #self.holes = kwargs.get('holes')
-        #self.t1_avl  = kwargs.get('t1avl')
-        #self.t10_avl = kwargs.get('t10avl')
-        #self.t19_avl = kwargs.get('t19avl')
-        #self.description = kwargs.get('description')
-        #self.address = kwargs.get('address')
-        #self.location = kwargs.get('location')
-        #self.logo_url = kwargs.get('logoUrl')
-        #self.par = kwargs.get('par')
-        #self.established = kwargs.get('established')
-        #self.facilities  = kwargs.get('facilities')
-        #self.rate_inclusions = kwargs.get('rateInclusions')
+        self.hash_password(kwargs.get('password'))
         self.email = kwargs.get('email')
         #self.created_on = kwargs.get('created_on')
-        self.hash_password(kwargs.get('password'))
 
     @property
     def dashboard_serialize(self):
@@ -79,6 +86,22 @@ class GolfCourseMaster(db.Model):
             "weekdays":self.weekdays,
             "weekends":self.weekends
         }
+
+    @property
+    def is_authenticated(self):
+        return True
+
+    @property
+    def is_active(self):
+        return True
+
+    @property
+    def is_anonymous(self):
+        return False
+
+    def get_auth_token(self):
+        data = [self.password_hash, self.email]
+        return login_serializer.dumps(data)
 
     def hash_password(self, password):
         self.password = pwd_context.encrypt(password)

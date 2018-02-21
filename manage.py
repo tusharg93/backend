@@ -7,6 +7,7 @@ from flask_script import Manager, prompt_bool
 from odyssey.v1.form import forms_blueprint_v1
 from odyssey.v1.auth import auth_blueprint_v1
 from odyssey.v1.slots import slots_blueprint_v1
+from odyssey.v1.vendors import vendors_blueprint_v1
 from odyssey import app, db
 
 migrate = Migrate(app, db)
@@ -16,6 +17,7 @@ manager.add_command('db', MigrateCommand)
 app.register_blueprint(forms_blueprint_v1)
 app.register_blueprint(auth_blueprint_v1)
 app.register_blueprint(slots_blueprint_v1)
+app.register_blueprint(vendors_blueprint_v1)
 
 @app.before_request
 def before_request():
