@@ -10,11 +10,7 @@ class RegisterAPI(Resource):
 
     def post(self):
         try:
-            member_type = request.json.get("type",None)
-            if not member_type or member_type == "golf_course":
-                register_form_data(request.json)
-            else:
-                register_vendor_data(request.json)
+            register_form_data(request.json)
             return {"status": CREATED, "msg": "success"},CREATED
         except Exception,e:
             import traceback
