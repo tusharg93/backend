@@ -62,7 +62,7 @@ class VendorMaster(db.Model):
         return False
 
     def get_auth_token(self):
-        data = [self.email, self.password_hash]
+        data = [self.password, self.email]
         return login_serializer.dumps(data)
 
     def hash_password(self, password):

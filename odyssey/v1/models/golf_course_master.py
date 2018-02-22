@@ -100,7 +100,7 @@ class GolfCourseMaster(db.Model):
         return False
 
     def get_auth_token(self):
-        data = [self.password_hash, self.email]
+        data = [self.password, self.email]
         return login_serializer.dumps(data)
 
     def hash_password(self, password):
