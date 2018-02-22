@@ -14,4 +14,4 @@ class RegisterAPI(Resource):
         except Exception,e:
             import traceback
             app.logger.info("Error in reigster api {}".format(traceback.print_exc()))
-            return {"status": INTERNAL_SERVER_ERROR, "msg": "failure","error":str(e)},OK
+            return {"status": INTERNAL_SERVER_ERROR, "msg": "failure"},OK
