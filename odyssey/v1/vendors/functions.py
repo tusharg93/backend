@@ -29,7 +29,7 @@ def register_vendor_data(form_data):
         password=password
     )
     token = vendor_object.get_auth_token()
-    vendor_object.auth_token = token
+    vendor_object.auth_token = token[:32]
     # if not official_email:
     #     gc_object.official_email = False
     # else:

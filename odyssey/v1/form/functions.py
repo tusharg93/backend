@@ -37,7 +37,7 @@ def register_form_data(form_data):
     # else:
     #     gc_object.official_email = True
     token = gc_object.get_auth_token()
-    gc_object.auth_token = token
+    gc_object.auth_token = token[:32]
     db.session.add(gc_object)
     db.session.commit()
     create_gc_slot_table(gc_object.id)
