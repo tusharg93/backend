@@ -12,7 +12,7 @@ class GCRatesInfo(db.Model):
     day_type = db.Column(db.String,db.ForeignKey('{}.id'.format(DAYS_TYPE_INFO)))
     hole_9_price = db.Column(db.Float)
     hole_18_price = db.Column(db.Float)
-    rate_type = db.Column(db.String,db.ForeignKey('{}.id'.format(RATE_TYPE)))
+    rate_type = db.Column(db.String)
 
     def __init__(self, *args, **kwargs):
         self.id = kwargs.get('id')

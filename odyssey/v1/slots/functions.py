@@ -134,8 +134,8 @@ def get_week_type_slots(gc_id, query_params):
     for slot in week_type_slots:
         d = dict()
         d['tee_time'] = slot.tee_time.strftime('%H:%M')
-        d['hole_9_price'] = slot.hole_9_price
-        d['hole_18_price'] = slot.hole_18_price
+        d['hole_9_price'] = str(slot.hole_9_price) if slot.hole_9_price else "",
+        d['hole_18_price'] = str(slot.hole_18_price) if slot.hole_18_price else "",
         result.append(d)
     return result
 
@@ -149,14 +149,18 @@ def update_week_type_slots(gc_id, json_data):
     table =  get_gc_slot_table_object("gc_{}_slots".format(gc_id))
     for slot in slots:
         tee_time = slot.get('tee_time')
-        hole_9_price = slot.get('hole_9_price')
-        hole_18_price = slot.get('hole_18_price')
+        hole_9_price = slot.get('hole_9_price',None)
+        hole_18_price = slot.get('hole_18_price',None)
         hole_9_flag = slot.get('hole_9_flag')
         hole_18_flag = slot.get('hole_18_flag')
         if not hole_9_flag:
             hole_9_price = None
+        else:
+            hole_9_price = float(hole_9_price)
         if not hole_18_flag:
             hole_18_price = None
+        else:
+            hole_18_price = float(hole_18_price)
         slot_status = slot.get('slot_status',None)
         if not slot_status:
             slot_status = 'OPEN'

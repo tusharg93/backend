@@ -184,10 +184,9 @@ def gc_fill_section_4(json_data, gc_id):
                 season_id=season_id,
                 gc_id=gc_id,
                 day_type=rate.get('day_type'),
-                hole_9_price=rate.get('prcie_9'),
-                hole_18_price=rate.get('price_18'),
-                rate_type=rate.get('rate_type'),
-                price=rate.get('price')
+                hole_9_price=float(rate.get('price_9')),
+                hole_18_price=float(rate.get('price_18')),
+                rate_type="ONLINE",
             )
             db.session.add(gc_rates_obj)
         special_day_obj = GCSpecialDaysInfo.query.filter(
@@ -224,7 +223,8 @@ def gc_fill_section_8(json_data, gc_id):
 
 def fill_rentals_addons(json_data, gc_id):
     from odyssey.v1.models.extras_info import ExtrasInfo
-    for data in json_data:
+    rentals = json_data.get("data")
+    for data in rentals:
         name  = data.get("name",None)
         price = data.get("price",None)
         if name and price:
