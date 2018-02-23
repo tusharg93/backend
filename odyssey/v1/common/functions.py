@@ -221,16 +221,16 @@ def add_default_values():
     from odyssey.v1.models.days_type_info import DaysTypeInfo
     from odyssey.v1.models.season_master import SeasonsMaster
     from odyssey import db
-    rates = ['Online','Guest','Member']
-    days = ['Weekday','Weekend','Holiday','Closed']
+    #rates = ['online','guest','Member']
+    days = ['weekday','weekend','holiday','closed']
     seasons = ['Summer','Spring','Winter','Fall','Shoulder Season','Active/On Season','Inactive/Off Season']
 
-    for rate in rates:
-        obj = RateType(
-            id = generate_id(),
-            name=rate
-        )
-        db.session.add(obj)
+    # for rate in rates:
+    #     obj = RateType(
+    #         id = generate_id(),
+    #         name=rate
+    #     )
+    #     db.session.add(obj)
     for day in days:
         obj = DaysTypeInfo(
             id = generate_id(),
