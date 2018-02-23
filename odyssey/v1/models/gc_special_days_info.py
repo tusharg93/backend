@@ -26,9 +26,10 @@ class GCSpecialDaysInfo(db.Model):
     def serialize(self):
         import time
         return {
-            "season_id":self.season_id,
+            "id":self.id,
             "day":self.day,
             "full_day":self.full_day,
+            "day_type":self.day_type,
             "start_time":time.strptime('%H:%M',self.start_time) if self.start_time else None,
             "end_time":time.strptime('%H:%M',self.end_time) if self.end_time else None
         }

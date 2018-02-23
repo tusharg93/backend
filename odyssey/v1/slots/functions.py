@@ -109,7 +109,6 @@ def generate_slots(gc_object, today, current_flag=True):
 
 
 def get_week_type_slots(gc_id, query_params):
-
     table = get_gc_slot_table_object("gc_{}_slots".format(gc_id))
     if not table:
         app.logger.error("Table doesnt exist")
