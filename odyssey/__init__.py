@@ -34,6 +34,7 @@ from odyssey.v1.models.extras_info import ExtrasInfo
 from odyssey.v1.models.gc_closed_days_info import GCClosedDaysInfo
 from odyssey.v1.models.gc_holidays_info import GCHolidaysDaysInfo
 from odyssey.v1.models.season_master import SeasonsMaster
+from odyssey.v1.models.vendor_course_contract import VendorCourseContract
 
 # from odyssey.v1.models.course_facilities_master import CourseFacilitiesMaster
 # from odyssey.v1.models.rate_inclusions_master import RateInclusionsMaster

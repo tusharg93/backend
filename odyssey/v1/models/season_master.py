@@ -14,7 +14,7 @@ class SeasonsMaster(db.Model):
         self.name = kwargs.get('name')
 
     @property
-    def serialize(self):
+    def season_serialize(self):
         return {
             "id": self.id,
             "name": self.name

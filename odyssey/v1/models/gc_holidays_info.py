@@ -19,6 +19,14 @@ class GCHolidaysDaysInfo(db.Model):
         self.name = kwargs.get('name')
         self.universal = kwargs.get('all')
 
-
+    @property
+    def holiday_serialize(self):
+        from datetime import datetime
+        return {
+            "id":self.id,
+            "date":datetime.strftime(self.date,'%Y-%m-%d'),
+            "name":self.name,
+            "universal":self.universal
+        }
 
 

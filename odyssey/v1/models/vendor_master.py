@@ -50,6 +50,13 @@ class VendorMaster(db.Model):
         self.hash_password(kwargs.get('password'))
 
     @property
+    def contract_serialize(self):
+        return {
+            "v_id":self.id,
+            "v_name":self.name,
+            "logo_url":self.logo_url
+        }
+    @property
     def is_authenticated(self):
         return True
 

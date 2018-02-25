@@ -23,3 +23,13 @@ class GCRatesInfo(db.Model):
         self.hole_9_price = kwargs.get('hole_9_price')
         self.hole_18_price = kwargs.get('hole_18_price')
 
+    @property
+    def gc_rates_serialize(self):
+        return {
+            "id": self.id,
+            "season_id":self.season_id,
+            "day_type":self.day_type,
+            "hole_9_price":self.hole_9_price,
+            "hole_18_price":self.hole_18_price
+        }
+

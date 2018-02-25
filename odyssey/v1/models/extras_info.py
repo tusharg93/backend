@@ -17,3 +17,11 @@ class ExtrasInfo(db.Model):
         self.name = kwargs.get('name')
         self.gc_id = kwargs.get('gc_id')
         self.price = kwargs.get('price')
+
+    @property
+    def extras_serialize(self):
+        return {
+            "id": self.id,
+            "price":self.price,
+            "name": self.name
+        }

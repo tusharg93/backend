@@ -84,7 +84,24 @@ class GolfCourseMaster(db.Model):
             "guest":self.is_guest,
             "live_slots_duration":self.duration_live_slots,
             "weekdays":self.weekdays,
-            "weekends":self.weekends
+            "weekends":self.weekends,
+            "min_golfers_weekends":self.min_weekends,
+            "min_golfers_weekends":self.min_weekends,
+            "insta_url":self.insta_url,
+            "twiter_url":self.twitter_url,
+            "facebook_url":self.facebook_url,
+            "facilities":self.facilities,
+            "logo_url":self.logo_url,
+            "address_line_2":self.address_2,
+            "address_line_1":self.address_1,
+            "person_mobile":self.contact_mobile,
+            "person_name":self.contact_name,
+            "website_url":self.website_url,
+            "course_info":self.course_info,
+            "weekday_operating_hrs":self.weekday_hrs,
+            "weekend_operating_hrs":self.weekend_hrs,
+            "mobile":self.mobile,
+            "country_code":self.country_code
         }
 
     @property

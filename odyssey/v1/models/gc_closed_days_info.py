@@ -22,14 +22,14 @@ class GCClosedDaysInfo(db.Model):
 
 
     @property
-    def serialize(self):
+    def closed_serialize(self):
         import time
+        from datetime import datetime
         return {
             "id":self.id,
-            "gc_id":self.gc_id,
-            "date":self.date.strftime('%Y-%m-%d'),
+            "date":datetime.strftime(self.date,'%Y-%m-%d'),
             "full_day":self.full_day,
-            "start_time":time.strptime('%H:%M',self.start_time) if self.start_time else None
+            "start_time":time.strftime('%H:%M',self.start_time) if self.start_time else None
 
         }
 

@@ -17,21 +17,23 @@ class GCSpecialDaysInfo(db.Model):
 
     def __init__(self, *args, **kwargs):
         self.id = kwargs.get('id')
+        self.gc_id = kwargs.get('gc_id')
         self.day_type = kwargs.get('day_type')
         self.day   =   kwargs.get('day')
-        self.full_day = kwargs.get('full_day')
+        self.full_day = kwargs.get('full_day') if kwargs.get('full_day') else True
 
 
     @property
-    def serialize(self):
+    def weekly_off_serialize(self):
         import time
         return {
             "id":self.id,
             "day":self.day,
+            "season_id":self.season_id,
             "full_day":self.full_day,
             "day_type":self.day_type,
-            "start_time":time.strptime('%H:%M',self.start_time) if self.start_time else None,
-            "end_time":time.strptime('%H:%M',self.end_time) if self.end_time else None
+            "start_time":time.strftime('%H:%M',self.start_time) if self.start_time else None,
+            "end_time":time.strftime('%H:%M',self.end_time) if self.end_time else None
         }
 
 

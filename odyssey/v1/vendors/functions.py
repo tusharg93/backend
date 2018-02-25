@@ -3,9 +3,9 @@ from odyssey.v1.common.functions import generate_id
 from flask import render_template
 from odyssey.v1.common.constants import SERVER_IP
 from odyssey.v1.common.functions import send_mail, generate_confirmation_token, confirm_token
+from odyssey.v1.models.vendor_master import VendorMaster
 
 def register_vendor_data(form_data):
-    from odyssey.v1.models.vendor_master import VendorMaster
     name = form_data.get('name', None)
     country = form_data.get('country', None)
     city = form_data.get('city', None)
@@ -48,6 +48,14 @@ def register_vendor_data(form_data):
         subject="TeeTimes Registration Successful !",
         html=html_data,
     )
+def image_upload(user_id, request):
+    from odyssey.v1.common.functions import upload_image_to_s3
+    user_object = VendorMaster.query.get(user_id)
+    img_url = upload_image_to_s3(request.files)
+    user_object.logo_url = img_url
+    db.session.add(user_object)
+    db.session.commit()
+    return img_url
 
 def create_vendor_profile(json_data, vendor_id):
     from odyssey.v1.models.vendor_master import VendorMaster

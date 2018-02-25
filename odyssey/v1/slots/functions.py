@@ -4,55 +4,67 @@ from odyssey.v1.models.gc_special_days_info import GCSpecialDaysInfo
 from odyssey.v1.models.gc_rates_info import GCRatesInfo
 from odyssey.v1.models.days_type_info import DaysTypeInfo
 from odyssey.v1.models.gc_seasons_info import GCSeasonsInfo
+from odyssey.v1.models.gc_special_days_info import GCSpecialDaysInfo
 from odyssey.v1.models.rate_type import RateType
 from odyssey.v1.models.golf_course_master import GolfCourseMaster
 from odyssey.v1.models.dynamic_tables import *
 from odyssey.v1.common.functions import generate_id
 from sqlalchemy import func
-#id,time,date,day_type,season_id,price_1,price_2,status,min_golfers,
 
 def slot_generator(gc_id):
-    gc_info =  db.session.query(GolfCourseMaster.id,GolfCourseMaster.duration_live_slots,GolfCourseMaster.weekends,GolfCourseMaster.weekdays).filter(GolfCourseMaster.id == gc_id).first()
-    today = datetime.today()
-    year_end = today.replace(day=31, month=12)
-    diff = (year_end - today).days
-    generate_slots(gc_info, today)
-    if diff < (gc_info.duration_live_slots * 30):
-        next_year_end = year_end.replace(year=today.year + 1)
-        generate_slots(gc_info, next_year_end, False)
+    gc_info =  db.session.query(GolfCourseMaster.id,GolfCourseMaster.duration_live_slots,GolfCourseMaster.weekends,GolfCourseMaster.weekdays, GolfCourseMaster.time_zone, GolfCourseMaster.min_weekdays, GolfCourseMaster.min_weekends).filter(GolfCourseMaster.id == gc_id).first()
+    today = datetime.utcnow()
+    year_end = today.replace(day=31, month=12,hour=18,minute=30,second=0)
+    generate_slots(gc_info, today, year_end)
 
-def generate_slots(gc_object, today, current_flag=True):
+def generate_slots(gc_object, today, year_end):
     gc_id = gc_object.id
     print today
+    today_date = today.date()
+    today_year = today.year
+    if gc_object.time_zone:
+        t = gc_object.time_zone[1:]
+        t = t.split(':')
+        if gc_object.time_zone[0] == '+':
+            today = today + timedelta(hours=int(t[0]), minutes=int(t[1]))
     table_object   = get_gc_slot_table_object("gc_{}_slots".format(gc_id))
     if table_object is None:
         print 'table not found hence creating'
         create_gc_slot_table(gc_id)
         table_object = get_gc_slot_table_object("gc_{}_slots".format(gc_id))
     gc_seasons_obj = GCSeasonsInfo.query.filter(GCSeasonsInfo.gc_id == gc_id).all()
+    min_weekdays = gc_object.min_weekdays if gc_object.min_weekdays else 4
+    min_weekends = gc_object.min_weekends if gc_object.min_weekends else 4
     weekdays = gc_object.weekdays.split(',')
     weekends = gc_object.weekends.split(',')
     days_type = DaysTypeInfo.query.filter(DaysTypeInfo.day_type.in_(['weekday','weekend'])).order_by(DaysTypeInfo.day_type).all()
     weekday_id = days_type[0].id
     weekend_id = days_type[0].id
-    current_year = today.year
+    current_year = today_year
     for gc_season_details in gc_seasons_obj:
         start_date = gc_season_details.start_date
         end_date = gc_season_details.end_date
         season_id = gc_season_details.season_id
+        maintenance_day = None
+        maintenance_stime = None
+        gc_special_days_obj = GCSpecialDaysInfo.query.filter(GCSpecialDaysInfo.gc_id == gc_id,
+                                                             GCSpecialDaysInfo.season_id == season_id).first()
+
+        if gc_special_days_obj:
+            maintenance_day = gc_special_days_obj.day
+            maintenance_stime = gc_object.start_time
         if not start_date or not end_date:
             app.logger.info("Season {} duration not defined".format(season_id))
             continue
         start_date = start_date.replace(year=current_year)
-        end_date = end_date.replace(year=current_year)
-        if current_flag:
-            if start_date < today.date():
-                start_date = today.date()
-            if end_date < today.date():
-                end_date = today.date()
-            if start_date == end_date:
-                app.logger.info("This season has passed {}".format(season_id))
-                continue
+        if start_date.month > end_date.month:
+            end_date = end_date.replace(year=current_year+1)
+        else:
+            end_date = end_date.replace(year=current_year)
+
+        if start_date < today_date:
+            start_date = start_date.replace(year=current_year+1)
+            end_date = end_date.replace(year=current_year+1)
         start_time = gc_season_details.start_time
         end_time = gc_season_details.end_time
         if not start_time or not end_time:
@@ -63,10 +75,9 @@ def generate_slots(gc_object, today, current_flag=True):
             app.logger.info("Interval not defined for this season {}".format(season_id))
             continue
         insert_data = list()
-        online_rate_id = RateType.query.filter(RateType.name == 'online').first().id
         rates_info = GCRatesInfo.query.filter(GCRatesInfo.gc_id == gc_id,
                                               GCRatesInfo.season_id == season_id,
-                                              GCRatesInfo.rate_type == online_rate_id).all()
+                                              GCRatesInfo.rate_type == 'ONLINE').all()
         wk_9_price = None
         wk_18_price = None
         we_9_price = None
@@ -79,22 +90,35 @@ def generate_slots(gc_object, today, current_flag=True):
                 we_9_price = rates.hole_9_price
                 we_18_price = rates.hole_18_price
         while start_date <= end_date:
+                status = 'OPEN'
+                special_stime = None
                 current_start = datetime.combine(start_date,start_time)
                 current_end = datetime.combine(start_date,end_time)
                 day_id = weekday_id if current_start.strftime('%a') in weekdays else weekend_id
+                if maintenance_day and current_start.strftime('%a') == maintenance_day:
+                    status = 'WEEKLY_OFF'
+                    if maintenance_stime:
+                        special_stime = datetime.combine(start_date, maintenance_stime)
                 while current_start <= current_end:
-                    d = dict()
-                    d['id'] = generate_id()
-                    d['date'] = start_date
-                    d['tee_time'] = datetime.strptime('{}:{}'.format(current_start.hour,current_start.minute),'%H:%M').time()
-                    d['season_id'] = season_id
-                    d['day_type'] = day_id
-                    d['day'] = current_start.strftime("%a")
-                    d['hole_9_price'] = wk_9_price if day_id == weekday_id else we_9_price
-                    d['hole_18_price'] = wk_18_price if day_id == weekday_id else we_18_price
-                    d['min_golfers'] = 4
-                    d['slot_status'] = 'OPEN'
-                    insert_data.append(d)
+                    if current_start > today:
+                        d = dict()
+                        d['id'] = generate_id()
+                        d['date'] = start_date
+                        d['tee_time'] = datetime.strptime('{}:{}'.format(current_start.hour,current_start.minute),'%H:%M').time()
+                        d['season_id'] = season_id
+                        d['day_type'] = day_id
+                        d['day'] = current_start.strftime("%a")
+                        d['hole_9_price'] = wk_9_price if day_id == weekday_id else we_9_price
+                        d['hole_18_price'] = wk_18_price if day_id == weekday_id else we_18_price
+                        d['min_golfers'] = min_weekdays if day_id == weekday_id else min_weekends
+                        if not special_stime:
+                            d['slot_status'] = status
+                        else:
+                            if current_start < special_stime:
+                                d['slot_status'] = status
+                            else:
+                                d['slot_status'] = 'OPEN'
+                        insert_data.append(d)
                     current_start = current_start + timedelta(minutes=interval)
                 start_date = start_date + timedelta(days=1)
         try:
@@ -308,3 +332,38 @@ def update_closed_days(gc_id, json_data):
         dates.append([date,start_time])
     db.session.commit()
     apply_closed(gc_id, dates)
+
+
+def update_day_types(gc_id, weekdays, weekends):
+    try:
+        weekdays = weekdays.split(',')
+        weekends = weekends.split(',')
+        weekdays = tuple(weekdays)
+        weekends = tuple(weekends)
+        days_type = DaysTypeInfo.query.filter(DaysTypeInfo.day_type.in_(['weekday', 'weekend'])).order_by(
+            DaysTypeInfo.day_type).all()
+        weekday_id = days_type[0].id
+        weekend_id = days_type[0].id
+        db.session.execute("update \"gc_{}_slots\" set day_type = {} where day in {} ;".format(
+                        gc_id, weekday_id,weekdays), bind=db.get_engine(app, 'base_db'))
+        db.session.execute("update \"gc_{}_slots\" set day_type = {} where day in {} ;".format(
+            gc_id, weekend_id, weekends), bind=db.get_engine(app, 'base_db'))
+        db.session.commit()
+    except:
+        import traceback
+        app.logger.info("error in updating weekday weekends")
+        app.logger.error(traceback.print_exc())
+
+def update_weekly_off_day(gc_id, day):
+    try:
+        if not gc_id or not day:
+            return
+        db.session.execute("update \"gc_{}_slots\" set slot_status = {} where slot_status = {} ;".format(
+            gc_id,'OPEN','WEEKLY_OFF'), bind=db.get_engine(app, 'base_db'))
+        db.session.execute("update \"gc_{}_slots\" set slot_status = {} where day = {} ;".format(
+            gc_id, 'WEEKLY_OFF', day), bind=db.get_engine(app, 'base_db'))
+        db.session.commit()
+    except:
+        import traceback
+        app.logger.info("error in updating maintenance day")
+        app.logger.error(traceback.print_exc())
