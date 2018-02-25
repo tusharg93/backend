@@ -50,10 +50,10 @@ class FillSectionsAPI(Resource):
                 update_gc_fill_section_3(request.json, gc_id)
             elif section == '4':
                 update_gc_fill_section_4(request.json, gc_id)
-            # elif section == '8':
-            #     gc_fill_section_8(request.json, gc_id)
-            # elif section == 'rentals':
-            #     fill_rentals_addons(request.json, gc_id)
+            elif section == '8':
+                update_gc_fill_section_8(request.json, gc_id)
+            elif section == 'rentals':
+                update_fill_rentals_addons(request.json, gc_id)
             else:
                 return {"status":BAD_REQUEST,"msg":"failure"},OK
             return {"status":OK,"msg":"success"},OK

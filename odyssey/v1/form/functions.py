@@ -366,6 +366,21 @@ def gc_fill_section_8(json_data, gc_id):
     db.session.add(gc_object)
     db.session.commit()
 
+def update_gc_fill_section_8(json_data, gc_id):
+    gc_object = GolfCourseMaster.query.filter(GolfCourseMaster.id == gc_id).first()
+    price_inclusions = json_data.get("price_includes",None)
+    cancel_policy = json_data.get("cancel_policy",None)
+    tnc = json_data.get("tnc",None)
+    min_weekdays = json_data.get("min_weekdays",0)
+    min_weekends = json_data.get("min_weekends",0)
+    gc_object.price_includes = price_inclusions
+    gc_object.cancel_policy = cancel_policy
+    gc_object.tnc = tnc
+    gc_object.min_weekdays = min_weekdays
+    gc_object.min_weekends = min_weekends
+    db.session.add(gc_object)
+    db.session.commit()
+
 def fill_rentals_addons(json_data, gc_id):
     from odyssey.v1.models.extras_info import ExtrasInfo
     rentals = json_data.get("data")
@@ -382,6 +397,19 @@ def fill_rentals_addons(json_data, gc_id):
             db.session.add(obj)
     db.session.commit()
 
+def update_fill_rentals_addons(json_data, gc_id):
+    from odyssey.v1.models.extras_info import ExtrasInfo
+    rentals = json_data.get("data")
+    for data in rentals:
+        id    = data.get('id',None)
+        name  = data.get("name",None)
+        price = data.get("price",None)
+        if id and name and price:
+            obj = ExtrasInfo.query.get(id)
+            obj.name = name
+            obj.price = float(price)
+            db.session.add(obj)
+    db.session.commit()
 
 def fill_gc_profile(json_data, gc_id):
     from odyssey.v1.models.golf_course_master import GolfCourseMaster

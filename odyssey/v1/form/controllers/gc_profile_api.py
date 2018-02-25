@@ -16,10 +16,11 @@ class GCProfileAPI(Resource):
         except Exception, e:
             return {"status": INTERNAL_ERROR, "msg": "failure"},OK
 
-    # def put(self):
-    #     try:
-    #         user_id = g.user.id
-    #         create_vendor_profile(request.json, user_id)
-    #         return {"status": OK, "msg": "success"},OK
-    #     except Exception, e:
-    #         return {"status": INTERNAL_ERROR, "msg": "failure"},OK
+    def put(self):
+        try:
+            user_id = g.user.id
+            fill_gc_profile(request.json, user_id)
+            return {"status": OK, "msg": "success"}, OK
+        except Exception, e:
+            return {"status": INTERNAL_ERROR, "msg": "failure"}, OK
+    
