@@ -26,7 +26,10 @@ def generate_slots(gc_object, today, year_end):
         t = gc_object.time_zone[1:]
         t = t.split(':')
         if gc_object.time_zone[0] == '+':
-            today = today + timedelta(hours=int(t[0]), minutes=int(t[1]))
+            if len(t) == 2:
+                today = today + timedelta(hours=int(t[0]), minutes=int(t[1]))
+            else:
+                today = today + timedelta(hours=int(t[0]))
     table_object   = get_gc_slot_table_object("gc_{}_slots".format(gc_id))
     if table_object is None:
         print 'table not found hence creating'

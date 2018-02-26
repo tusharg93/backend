@@ -19,8 +19,8 @@ def register_form_data(form_data):
     email   =   form_data.get('email',None)
     password =  form_data.get('password',None)
     official_email = form_data.get('official_email',True)
-    # if get_member(email):
-    #     raise UserExistsException
+    if get_member(email):
+        raise UserExistsException
     MAIL_USERNAME = app.config.get('MAIL_USERNAME')
     gc_object = GolfCourseMaster(
         id = generate_id(),
@@ -32,10 +32,6 @@ def register_form_data(form_data):
         email=email,
         password=password
     )
-    # if not official_email:
-    #     gc_object.official_email = False
-    # else:
-    #     gc_object.official_email = True
     token = gc_object.get_auth_token()
     gc_object.auth_token = token[:32]
     db.session.add(gc_object)
