@@ -156,34 +156,36 @@ def update_gc_fill_section_2(json_data, gc_id):
             gc_object.weekends = weekends
             db.session.add(gc_object)
             update_day_types(gc_id,weekdays,weekends)
-        # closed_info = json_data.get('closed')
-        # for close in closed_info:
-        #     id = close.get('id',None)
-        #     day = close.get('day')
-        #     day_type = close.get('day_type')
-        #     full_day = close.get('full_day',False)
-        #     special_day_obj  = None
-        #     flag2 = False
-        #     if id:
-        #         special_day_obj = GCSpecialDaysInfo.query.get(id)
-        #     if special_day_obj:
-        #         if special_day_obj.day != day:
-        #             special_day_obj.day = day
-        #             flag2 = True
-        #         special_day_obj.day_type = day_type
-        #     else:
-        #         flag2 = True
-        #         special_day_obj = GCSpecialDaysInfo(
-        #             id=generate_id(),
-        #             gc_id=gc_id,
-        #             day_type=day_type,
-        #             day=day
-        #         )
-        #     if not full_day:
-        #         special_day_obj.full_day   =    False
-        #     db.session.add(special_day_obj)
-        #     if flag2:
-        #         update_weekly_off_day(gc_id, special_day_obj.day)
+        closed_info = json_data.get('closed')
+        for close in closed_info:
+            day = close.get('day')
+            day_type = close.get('day_type')
+            full_day = close.get('full_day',False)
+            special_day_obj  = None
+            flag2 = False
+            special_day_obj = GCSpecialDaysInfo.query.filter(GCSpecialDaysInfo.gc_id == gc_id).first()
+            if special_day_obj:
+                if special_day_obj.day != day:
+                    all_obj = GCSpecialDaysInfo.query.filter(GCSpecialDaysInfo.gc_id == gc_id).all()
+                    for obj in all_obj:
+                        obj.day = day
+                        obj.full_day = full_day
+                        obj.day_type = day_type
+                        db.session.add(obj)
+                    db.session.commit()
+                    flag2 = True
+            else:
+                flag2 = True
+                special_day_obj = GCSpecialDaysInfo(
+                    id=generate_id(),
+                    gc_id=gc_id,
+                    full_day=full_day,
+                    day_type=day_type,
+                    day=day
+                )
+                db.session.add(special_day_obj)
+            if flag2:
+                update_weekly_off_day(gc_id, day)
         db.session.commit()
 
 def gc_fill_section_3(json_data, gc_id):

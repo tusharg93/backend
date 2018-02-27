@@ -65,7 +65,7 @@ def user_login(member_data):
         # else:
         #     create_vendor_session_key(member.id,session.sid)
         # session['user_id'] = member.id
-        return {"country": member.country if member.country else None,"activated":flag,"id":member.id,"token":member.auth_token}
+        return {"country": member.country if member.country else None,"activated":flag,"id":member.id,"token":member.auth_token, "source":source}
     app.logger.info('[Login Incorrect : Login {} ]'.format(login_id))
     raise UserWrongPasswordException
 

@@ -255,11 +255,7 @@ def get_default_values():
     seasons = SeasonsMaster.query.all()
     result['seasons'] = list()
     for season in seasons:
-        result['seasons'].append(season.serialize)
-    rates = RateType.query.all()
-    result['rates'] = list()
-    for rate in rates:
-        result['rates'].append(rate.serialize)
+        result['seasons'].append(season.season_serialize)
     days = DaysTypeInfo.query.all()
     result['days'] = list()
     for day in days:
