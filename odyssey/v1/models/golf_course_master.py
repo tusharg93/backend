@@ -12,6 +12,7 @@ class GolfCourseMaster(db.Model):
     __bind_key__ = 'base_db'
     id = db.Column(db.String, primary_key=True)
     name = db.Column(db.String)
+    currency = db.Column(db.String)
     country = db.Column(db.String)
     state =  db.Column(db.String)
     city = db.Column(db.String)
