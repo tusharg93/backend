@@ -178,6 +178,7 @@ def gc_fill_section_3(json_data, gc_id):
                 id=season_id,
                 name=season_name
             )
+            season_id = new_season.id
             db.session.add(new_season)
             db.session.commit()
         season_start = datetime.datetime.strptime(season_start,"%m-%d").date()
@@ -198,8 +199,10 @@ def gc_fill_section_3(json_data, gc_id):
 def update_gc_fill_section_3(json_data, gc_id):
     from odyssey.v1.models.season_master import SeasonsMaster
     from odyssey.v1.models.gc_seasons_info import GCSeasonsInfo
+    from odyssey.v1.slots.functions import update_season_dates_slot
     seasons = json_data.get('seasons')
     for season in seasons:
+        uid = season.get('uid', None)
         season_id = season.get('id',None)
         season_name = season.get('name',None)
         season_start = season.get('start_date',None)
@@ -210,11 +213,11 @@ def update_gc_fill_section_3(json_data, gc_id):
                 id=season_id,
                 name=season_name
             )
+            season_id = new_season.id
             db.session.add(new_season)
             db.session.commit()
         season_start = datetime.datetime.strptime(season_start,"%m-%d").date()
         season_end   = datetime.datetime.strptime(season_end,"%m-%d").date()
-        uid = season.get('uid',None)
         gc_season_obj = None
         if uid:
             gc_season_obj = GCSeasonsInfo.query.get(uid)
@@ -232,6 +235,7 @@ def update_gc_fill_section_3(json_data, gc_id):
             )
         db.session.add(gc_season_obj)
     db.session.commit()
+    #update_season_dates_slot(gc_id)
 
 def gc_fill_section_4(json_data, gc_id):
     from odyssey.v1.models.gc_seasons_info import GCSeasonsInfo
@@ -247,8 +251,8 @@ def gc_fill_section_4(json_data, gc_id):
         gc_season_obj = GCSeasonsInfo.query.filter(GCSeasonsInfo.gc_id == gc_id,
                                                    GCSeasonsInfo.season_id == season_id).first()
         if gc_season_obj:
-            gc_season_obj.start_time = time.strptime(start_time,'%H:%M')
-            gc_season_obj.end_time = time.strptime(end_time,'%H:%M')
+            gc_season_obj.start_time = datetime.datetime.strptime(start_time,'%H:%M').time()
+            gc_season_obj.end_time = datetime.datetime.strptime(end_time,'%H:%M').time()
             gc_season_obj.tee_interval = time_interval
             rates = season_data.get('rates')
             for rate in rates:

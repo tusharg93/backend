@@ -24,7 +24,7 @@ class GCHolidaysDaysInfo(db.Model):
         from datetime import datetime
         return {
             "id":self.id,
-            "date":datetime.strftime(self.date,'%Y-%m-%d'),
+            "date":self.date.strftime('%Y-%m-%d'),
             "name":self.name,
             "universal":self.universal
         }

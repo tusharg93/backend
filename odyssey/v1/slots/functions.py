@@ -195,7 +195,7 @@ def update_week_type_slots(gc_id, json_data):
 
 def get_date_wise_slot(gc_id, query_data):
     date = query_data.get("date")
-    date_obj = datetime.strptime(date,'%Y-%m-%d')
+    date_obj = datetime.strptime(date,'%Y-%m-%d').date()
     if not date:
         return None
     table = get_gc_slot_table_object("gc_{}_slots".format(gc_id))
@@ -267,7 +267,7 @@ def update_holiday_days(gc_id, json_data):
     dates = list()
     for info in data:
         date = info.get("date")
-        date = datetime.strptime("%Y-%m-%d",date)
+        date = datetime.strptime("%Y-%m-%d",date).date()
         name = info.get("name")
         all_flag = info.get("universal",False)
         obj = GCHolidaysDaysInfo(
@@ -311,7 +311,7 @@ def update_closed_days(gc_id, json_data):
         if full_day:
             obj = GCClosedDaysInfo(
                 id=generate_id(),
-                date= date,
+                date= datetime.strptime(date,'%Y-%m-%d'),
                 gc_id=gc_id,
                 full_day=full_day,
                 start_time=None
@@ -365,3 +365,6 @@ def update_weekly_off_day(gc_id, day):
         import traceback
         app.logger.info("error in updating maintenance day")
         app.logger.error(traceback.print_exc())
+
+def update_season_dates_slot(gc_id):
+    return
