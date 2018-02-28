@@ -117,31 +117,23 @@ def update_gc_fill_section_1(json_data, gc_id):
         db.session.commit()
 
 def gc_fill_section_2(json_data, gc_id):
-    from odyssey.v1.models.gc_special_days_info import GCSpecialDaysInfo
     gc_object = GolfCourseMaster.query.filter(GolfCourseMaster.id == gc_id).first()
     if gc_object:
         weekdays = json_data.get('weekdays')
         weekends = json_data.get('weekends')
         gc_object.weekdays = ','.join(weekdays)
         gc_object.weekends = ','.join(weekends)
-        db.session.add(gc_object)
         closed_info = json_data.get('closed')
-        for close in closed_info:
-            day = close.get('day')
-            day_type = close.get('day_type')
-            full_day = close.get('full_day')
-            special_day_obj = GCSpecialDaysInfo(
-                id=generate_id(),
-                gc_id=gc_id,
-                day_type=day_type,
-                day=day
-            )
-            if not full_day:
-                special_day_obj.full_day   =    False
-            db.session.add(special_day_obj)
+        if closed_info:
+            for close in closed_info:
+                day = close.get('day')
+                full_day = close.get('full_day',False)
+                gc_object.maintenance_day = day
+                gc_object.maintenance_type = full_day
+        db.session.add(gc_object)
         db.session.commit()
+
 def update_gc_fill_section_2(json_data, gc_id):
-    from odyssey.v1.models.gc_special_days_info import GCSpecialDaysInfo
     from odyssey.v1.slots.functions import update_day_types, update_weekly_off_day
     gc_object = GolfCourseMaster.query.filter(GolfCourseMaster.id == gc_id).first()
     if gc_object:
@@ -154,39 +146,22 @@ def update_gc_fill_section_2(json_data, gc_id):
             flag = True
             gc_object.weekdays = weekdays
             gc_object.weekends = weekends
-            db.session.add(gc_object)
-            update_day_types(gc_id,weekdays,weekends)
         closed_info = json_data.get('closed')
-        for close in closed_info:
-            day = close.get('day')
-            day_type = close.get('day_type')
-            full_day = close.get('full_day',False)
-            special_day_obj  = None
-            flag2 = False
-            special_day_obj = GCSpecialDaysInfo.query.filter(GCSpecialDaysInfo.gc_id == gc_id).first()
-            if special_day_obj:
-                if special_day_obj.day != day:
-                    all_obj = GCSpecialDaysInfo.query.filter(GCSpecialDaysInfo.gc_id == gc_id).all()
-                    for obj in all_obj:
-                        obj.day = day
-                        obj.full_day = full_day
-                        obj.day_type = day_type
-                        db.session.add(obj)
-                    db.session.commit()
+        flag2 = False
+        if closed_info:
+            for close in closed_info:
+                day = close.get('day')
+                full_day = close.get('full_day',False)
+                if gc_object.maintenance_day and gc_object.maintenance_day != day:
                     flag2 = True
-            else:
-                flag2 = True
-                special_day_obj = GCSpecialDaysInfo(
-                    id=generate_id(),
-                    gc_id=gc_id,
-                    full_day=full_day,
-                    day_type=day_type,
-                    day=day
-                )
-                db.session.add(special_day_obj)
-            if flag2:
-                update_weekly_off_day(gc_id, day)
+                    gc_object.maintenance_day = day
+                    gc_object.maintenance_type = full_day
+        db.session.add(gc_object)
         db.session.commit()
+        if flag2:
+            update_weekly_off_day(gc_id, day)
+        if flag:
+            update_day_types(gc_id, weekdays, weekends)
 
 def gc_fill_section_3(json_data, gc_id):
     from odyssey.v1.models.season_master import SeasonsMaster
@@ -261,11 +236,9 @@ def update_gc_fill_section_3(json_data, gc_id):
 def gc_fill_section_4(json_data, gc_id):
     from odyssey.v1.models.gc_seasons_info import GCSeasonsInfo
     from odyssey.v1.models.gc_rates_info import GCRatesInfo
-    from odyssey.v1.models.gc_special_days_info import GCSpecialDaysInfo
     import time
+    gc_object = GolfCourseMaster.query.get(gc_id)
     seasons_info  = json_data.get('seasons_info')
-    if not gc_id:
-        gc_id = GolfCourseMaster.query.first().id
     for season_data in seasons_info:
         season_id = season_data.get('id', None)
         start_time = season_data.get('start_time',None)
@@ -277,41 +250,34 @@ def gc_fill_section_4(json_data, gc_id):
             gc_season_obj.start_time = time.strptime(start_time,'%H:%M')
             gc_season_obj.end_time = time.strptime(end_time,'%H:%M')
             gc_season_obj.tee_interval = time_interval
-            db.session.add(gc_season_obj)
-        rates = season_data.get('rates')
-        for rate in rates:
-            gc_rates_obj = GCRatesInfo(
-                id=generate_id(),
-                season_id=season_id,
-                gc_id=gc_id,
-                day_type=rate.get('day_type'),
-                hole_9_price=float(rate.get('hole_9_price')) if rate.get('hole_9_price') else None,
-                hole_18_price=float(rate.get('hole_18_price')) if rate.get('hole_18_price') else None,
-                rate_type="ONLINE",
-            )
-            db.session.add(gc_rates_obj)
-        special_day_obj = GCSpecialDaysInfo.query.filter(
-                        GCSpecialDaysInfo.gc_id == gc_id
-        ).first()
-        if special_day_obj and special_day_obj.full_day == False:
-            maintenance = season_data.get('maintenance',None)
-            if maintenance:
-                stime = maintenance.get('start_time',None)
-                etime = maintenance.get('end_time',None)
-                if stime and etime:
-                    special_day_obj.start_time = time.strptime(stime,'%H:%M')
-                    special_day_obj.end_time = time.strptime(etime,'%H:%M')
-                    special_day_obj.season_id = season_id
-                    db.session.add(special_day_obj)
-
+            rates = season_data.get('rates')
+            for rate in rates:
+                gc_rates_obj = GCRatesInfo(
+                    id=generate_id(),
+                    season_id=season_id,
+                    gc_id=gc_id,
+                    day_type=rate.get('day_type'),
+                    hole_9_price=float(rate.get('hole_9_price')) if rate.get('hole_9_price') else None,
+                    hole_18_price=float(rate.get('hole_18_price')) if rate.get('hole_18_price') else None,
+                    rate_type="ONLINE",
+                )
+                db.session.add(gc_rates_obj)
+            if gc_object and gc_object.maintenance_type == False:
+                maintenance = season_data.get('maintenance',None)
+                if maintenance:
+                    stime = maintenance.get('start_time',None)
+                    etime = maintenance.get('end_time',None)
+                    if stime and etime:
+                        gc_season_obj.maintenance_stime = datetime.datetime.strptime(stime,'%H:%M').time()
+                        gc_season_obj.maintenance_etime = datetime.datetime.strptime(etime,'%H:%M').time()
+        db.session.add(gc_season_obj)
     db.session.commit()
 
 def update_gc_fill_section_4(json_data, gc_id):
     from odyssey.v1.models.gc_seasons_info import GCSeasonsInfo
     from odyssey.v1.models.gc_rates_info import GCRatesInfo
-    from odyssey.v1.models.gc_special_days_info import GCSpecialDaysInfo
-    import time
     seasons_info  = json_data.get('seasons_info')
+    gc_object = GolfCourseMaster.query.get(gc_id)
     for season_data in seasons_info:
         season_id = season_data.get('id', None)
         start_time = season_data.get('start_time',None)
@@ -321,10 +287,9 @@ def update_gc_fill_section_4(json_data, gc_id):
         gc_season_obj = GCSeasonsInfo.query.get(id)
         if gc_season_obj:
             gc_season_obj.season_id = season_id
-            gc_season_obj.start_time = time.strptime(start_time,'%H:%M')
-            gc_season_obj.end_time = time.strptime(end_time,'%H:%M')
+            gc_season_obj.start_time = datetime.datetime.strptime(start_time,'%H:%M').time()
+            gc_season_obj.end_time = datetime.datetime.strptime(end_time,'%H:%M').time()
             gc_season_obj.tee_interval = time_interval
-            db.session.add(gc_season_obj)
             rates = season_data.get('rates')
             for rate in rates:
                 rate_id = rate.get('id')
@@ -337,16 +302,13 @@ def update_gc_fill_section_4(json_data, gc_id):
                     db.session.add(gc_rates_obj)
             maintenance = season_data.get('maintenance',None)
             if maintenance:
-                m_id = maintenance.get('id')
-                special_day_obj = GCSpecialDaysInfo.query.get(m_id)
-                if special_day_obj and special_day_obj.full_day == False:
+                if gc_object and gc_object.maintenance_type == False:
                     stime = maintenance.get('start_time',None)
                     etime = maintenance.get('end_time',None)
                     if stime and etime:
-                        special_day_obj.start_time = time.strptime(stime,'%H:%M')
-                        special_day_obj.end_time = time.strptime(etime,'%H:%M')
-                        special_day_obj.season_id = season_id
-                        db.session.add(special_day_obj)
+                        gc_season_obj.maintenance_stime = datetime.datetime.strptime(stime,'%H:%M').time()
+                        gc_season_obj.maintenance_etime = datetime.datetime.strptime(etime,'%H:%M').time()
+            db.session.add(gc_season_obj)
         db.session.commit()
 
 def gc_fill_section_8(json_data, gc_id):
@@ -381,7 +343,7 @@ def update_gc_fill_section_8(json_data, gc_id):
 
 def fill_rentals_addons(json_data, gc_id):
     from odyssey.v1.models.extras_info import ExtrasInfo
-    rentals = json_data.get("data")
+    rentals = json_data.get("rentals")
     for data in rentals:
         name  = data.get("name",None)
         price = data.get("price",None)
@@ -397,7 +359,7 @@ def fill_rentals_addons(json_data, gc_id):
 
 def update_fill_rentals_addons(json_data, gc_id):
     from odyssey.v1.models.extras_info import ExtrasInfo
-    rentals = json_data.get("data")
+    rentals = json_data.get("rentals")
     for data in rentals:
         id    = data.get('id',None)
         name  = data.get("name",None)
@@ -532,7 +494,6 @@ def vendor_request(gc_id, json_data):
 def load_home_page_data(gc_id):
     from odyssey.v1.models.golf_course_master import GolfCourseMaster
     from odyssey.v1.models.gc_seasons_info import GCSeasonsInfo
-    from odyssey.v1.models.gc_special_days_info import GCSpecialDaysInfo
     from odyssey.v1.models.gc_rates_info import GCRatesInfo
     from odyssey.v1.models.season_master import SeasonsMaster
     from odyssey.v1.models.gc_holidays_info import GCHolidaysDaysInfo
@@ -544,9 +505,6 @@ def load_home_page_data(gc_id):
     if not gc_base_obj:
         return result
     result['gc_basic_info'] = gc_base_obj.dashboard_serialize
-    gc_special_days_obj = GCSpecialDaysInfo.query.filter(GCSpecialDaysInfo.gc_id == gc_id).all()
-    if gc_special_days_obj:
-        result['maintenance_info'] = [x.weekly_off_serialize for x in gc_special_days_obj]
     gc_seasons_obj = GCSeasonsInfo.query.filter(GCSeasonsInfo.gc_id == gc_id,
                                                                           GCSeasonsInfo.season_id == SeasonsMaster.id).all()
     if gc_seasons_obj:

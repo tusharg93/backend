@@ -12,6 +12,8 @@ class GCSeasonsInfo(db.Model):
     start_date = db.Column(db.Date)
     end_date = db.Column(db.Date)
     start_time = db.Column(TIME())
+    maintenance_stime = db.Column(TIME())
+    maintenance_etime = db.Column(TIME())
     end_time = db.Column(TIME())
     tee_interval = db.Column(db.Integer)
 
@@ -28,13 +30,13 @@ class GCSeasonsInfo(db.Model):
 
     @property
     def gc_season_serialize(self):
-        import time
-        from datetime import datetime
         return {
             "id": self.id,
-            "start_date":datetime.strftime(self.start_date,"%m-%d",) if self.start_date else None,
-            "end_date":datetime.strftime(self.end_date,"%m-%d") if self.end_date else None,
-            "start_time":time.strftime("%H:%M",self.start_time) if self.start_time else None,
-            "end_time":time.strftime("%H:%M",self.end_time) if self.end_time else None,
+            "start_date":self.start_date.strftime("%m-%d") if self.start_date else None,
+            "end_date":self.end_date.strftime("%m-%d") if self.end_date else None,
+            "start_time":self.start_time.strftime("%H:%M") if self.start_time else None,
+            "end_time":self.end_time.strftime("%H:%M") if self.end_time else None,
+            "maintenance_stime": self.maintenance_stime.strftime("%H:%M") if self.start_time else None,
+            "maintenance_etime": self.maintenance_etime.strftime("%H:%M") if self.end_time else None,
             "tee_interval":self.tee_interval if self.tee_interval else None
         }

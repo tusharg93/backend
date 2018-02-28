@@ -1,18 +1,15 @@
 from odyssey import db, app
 from datetime import datetime, timedelta
-from odyssey.v1.models.gc_special_days_info import GCSpecialDaysInfo
 from odyssey.v1.models.gc_rates_info import GCRatesInfo
 from odyssey.v1.models.days_type_info import DaysTypeInfo
 from odyssey.v1.models.gc_seasons_info import GCSeasonsInfo
-from odyssey.v1.models.gc_special_days_info import GCSpecialDaysInfo
-from odyssey.v1.models.rate_type import RateType
 from odyssey.v1.models.golf_course_master import GolfCourseMaster
 from odyssey.v1.models.dynamic_tables import *
 from odyssey.v1.common.functions import generate_id
 from sqlalchemy import func
 
 def slot_generator(gc_id):
-    gc_info =  db.session.query(GolfCourseMaster.id,GolfCourseMaster.duration_live_slots,GolfCourseMaster.weekends,GolfCourseMaster.weekdays, GolfCourseMaster.time_zone, GolfCourseMaster.min_weekdays, GolfCourseMaster.min_weekends).filter(GolfCourseMaster.id == gc_id).first()
+    gc_info =  db.session.query(GolfCourseMaster.id,GolfCourseMaster.duration_live_slots,GolfCourseMaster.weekends,GolfCourseMaster.weekdays, GolfCourseMaster.time_zone, GolfCourseMaster.min_weekdays, GolfCourseMaster.min_weekends, GolfCourseMaster.maintenance_day, GolfCourseMaster.maintenance_type).filter(GolfCourseMaster.id == gc_id).first()
     today = datetime.utcnow()
     year_end = today.replace(day=31, month=12,hour=18,minute=30,second=0)
     generate_slots(gc_info, today, year_end)
@@ -44,18 +41,15 @@ def generate_slots(gc_object, today, year_end):
     weekday_id = days_type[0].id
     weekend_id = days_type[0].id
     current_year = today_year
+    maintenance_day = gc_object.maintenance_day
+    maintenance_type = gc_object.maintenance_type
     for gc_season_details in gc_seasons_obj:
         start_date = gc_season_details.start_date
         end_date = gc_season_details.end_date
         season_id = gc_season_details.season_id
-        maintenance_day = None
         maintenance_stime = None
-        gc_special_days_obj = GCSpecialDaysInfo.query.filter(GCSpecialDaysInfo.gc_id == gc_id,
-                                                             GCSpecialDaysInfo.season_id == season_id).first()
-
-        if gc_special_days_obj:
-            maintenance_day = gc_special_days_obj.day
-            maintenance_stime = gc_object.start_time
+        if maintenance_type == False:
+            maintenance_stime = gc_season_details.maintenance_stime
         if not start_date or not end_date:
             app.logger.info("Season {} duration not defined".format(season_id))
             continue
@@ -307,7 +301,6 @@ def apply_closed(gc_id, dates):
         app.logger.error(traceback.print_exc())
 
 def update_closed_days(gc_id, json_data):
-    import time
     from odyssey.v1.models.gc_closed_days_info import GCClosedDaysInfo
     data = json_data.get("data")
     dates = list()
@@ -319,15 +312,17 @@ def update_closed_days(gc_id, json_data):
             obj = GCClosedDaysInfo(
                 id=generate_id(),
                 date= date,
+                gc_id=gc_id,
                 full_day=full_day,
                 start_time=None
             )
         else:
             start_time = info.get('start_time')
-            start_time = time.strptime(start_time, '%H:%M')
+            start_time = datetime.strptime(start_time, '%H:%M').time()
             obj = GCClosedDaysInfo(
                 id=generate_id(),
                 date=date,
+                gc_id=gc_id,
                 full_day=full_day,
                 start_time=start_time
             )

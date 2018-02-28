@@ -51,6 +51,8 @@ class GolfCourseMaster(db.Model):
     tnc         = db.Column(db.String)
     price_includes = db.Column(JSON)
     auth_token = db.Column(db.String)
+    maintenance_day = db.Column(db.String)
+    maintenance_type = db.Column(db.Boolean)
     is_email_verified = db.Column(db.Boolean,default=False)
     is_deleted     = db.Column(db.Boolean,default=False)
     official_email = db.Column(db.Boolean,default=False)
@@ -85,8 +87,10 @@ class GolfCourseMaster(db.Model):
             "live_slots_duration":self.duration_live_slots,
             "weekdays":self.weekdays,
             "weekends":self.weekends,
+            "maintenance_day":self.maintenance_day,
+            "maintenance_type":self.maintenance_type,
             "min_golfers_weekends":self.min_weekends,
-            "min_golfers_weekends":self.min_weekends,
+            "min_golfers_weekdays":self.min_weekdays,
             "insta_url":self.insta_url,
             "twiter_url":self.twitter_url,
             "facebook_url":self.facebook_url,

@@ -33,7 +33,7 @@ class FillSectionsAPI(Resource):
         except:
             import traceback
             db.session.rollback()
-            app.logger.error('Unknown Error in login'.format(str(traceback.print_exc())))
+            app.logger.error('Unknown Error in sections api'.format(str(traceback.print_exc())))
             return {"status":INTERNAL_SERVER_ERROR, "error": "some error occured"}, OK
 
     def put(self, section):
