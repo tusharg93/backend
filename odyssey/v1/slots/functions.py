@@ -56,12 +56,16 @@ def generate_slots(gc_object, today, year_end):
         start_date = start_date.replace(year=current_year)
         if start_date.month > end_date.month:
             end_date = end_date.replace(year=current_year+1)
+        elif start_date.month == end_date.month and start_date.day > end_date.day:
+            end_date = end_date.replace(year=current_year+1)
         else:
             end_date = end_date.replace(year=current_year)
 
-        if start_date < today_date:
+        if start_date < today_date and end_date < today_date:
             start_date = start_date.replace(year=current_year+1)
             end_date = end_date.replace(year=current_year+1)
+        elif start_date <= today_date and end_date > today_date:
+            start_date = today_date
         start_time = gc_season_details.start_time
         end_time = gc_season_details.end_time
         if not start_time or not end_time:
