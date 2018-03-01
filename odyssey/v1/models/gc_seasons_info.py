@@ -32,11 +32,12 @@ class GCSeasonsInfo(db.Model):
     def gc_season_serialize(self):
         return {
             "id": self.id,
+            "season_id":self.season_id,
             "start_date":self.start_date.strftime("%m-%d") if self.start_date else None,
             "end_date":self.end_date.strftime("%m-%d") if self.end_date else None,
             "start_time":self.start_time.strftime("%H:%M") if self.start_time else None,
             "end_time":self.end_time.strftime("%H:%M") if self.end_time else None,
-            "maintenance_stime": self.maintenance_stime.strftime("%H:%M") if self.start_time else None,
-            "maintenance_etime": self.maintenance_etime.strftime("%H:%M") if self.end_time else None,
+            "maintenance_stime": self.maintenance_stime.strftime("%H:%M") if self.maintenance_stime else None,
+            "maintenance_etime": self.maintenance_etime.strftime("%H:%M") if self.maintenance_etime else None,
             "tee_interval":self.tee_interval if self.tee_interval else None
         }
