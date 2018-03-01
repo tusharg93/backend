@@ -47,4 +47,4 @@ VENDOR_SESSION_KEYS = 'vendor_session_keys'
 #common
 EXTRAS_INFO = "extras_info"
 DAYS_INFO = 'days_info'
-SERVER_IP   =   '52.77.252.230'
+SERVER_IP   =   '13.59.128.238'
