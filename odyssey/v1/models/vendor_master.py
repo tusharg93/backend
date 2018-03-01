@@ -53,7 +53,7 @@ class VendorMaster(db.Model):
     def contract_serialize(self):
         return {
             "v_id":self.id,
-            "v_name":self.name,
+            "v_name":self.company_name,
             "logo_url":self.logo_url
         }
     @property
