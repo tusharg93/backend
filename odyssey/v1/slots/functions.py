@@ -250,7 +250,7 @@ def apply_holiday(gc_id, dates):
     try:
         for date in dates:
             table_data = db.session.query(table.c.season_id,table.c.day_type).filter(table.c.date == date).first()
-            if table_data.day_type == weekend_id:
+            if table_data and table_data.day_type == weekend_id:
                 continue
             else:
                 weekend_rate_info = GCRatesInfo.query.filter(GCRatesInfo.season_id == table_data.season_id,
