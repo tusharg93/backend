@@ -17,6 +17,7 @@ def register_vendor_data(form_data):
     # if get_member(email):
     #     raise UserExistsException
     MAIL_USERNAME = app.config.get('MAIL_USERNAME')
+    IP = app.config.get('HOST_IP')
     vendor_object = VendorMaster(
         id=generate_id(),
         name=name,
@@ -37,7 +38,7 @@ def register_vendor_data(form_data):
     db.session.add(vendor_object)
     db.session.commit()
     token = generate_confirmation_token(email=email)
-    verify_url = 'http://{}/verify/{}?type=vendor'.format(SERVER_IP, token)
+    verify_url = 'http://{}/verify/{}?type=vendor'.format(IP, token)
     with app.app_context():
         html_data = render_template("email_confirmation.html", confirm_url=verify_url)
     send_mail(

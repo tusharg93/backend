@@ -76,12 +76,11 @@ class Config(object):
     SQLALCHEMY_BINDS = {
         'base_db': SQLALCHEMY_DATABASE_URI,
     }
-
+    HOST_IP = os.environ['HOST_IP']
     DATABASE_USER =os.environ['DATABASE_USER']
     DATABASE_PASSWORD = os.environ['PGPASSWORD']
     AWS_ACCESS_KEY = os.environ['AWS_ACCESS_KEY']
     AWS_ACCESS_SECRET = os.environ['AWS_ACCESS_SECRET']
-    AWS_S3_URL = os.environ['AWS_S3_URL']
     AWS_BUCKET_URL = os.environ['AWS_BUCKET_URL']
     PERMANENT_SESSION_LIFETIME = PERMANENT_SESSION_LIFETIME
     #SESSION_TYPE = SESSION_TYPE

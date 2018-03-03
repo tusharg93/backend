@@ -22,6 +22,7 @@ def register_form_data(form_data):
     if get_member(email):
         raise UserExistsException
     MAIL_USERNAME = app.config.get('MAIL_USERNAME')
+    IP = app.config.get('HOST_IP')
     gc_object = GolfCourseMaster(
         id = generate_id(),
         name = name,
@@ -38,7 +39,7 @@ def register_form_data(form_data):
     db.session.commit()
     create_gc_slot_table(gc_object.id)
     token   =   generate_confirmation_token(email=email)
-    verify_url  =   'http://{}/verify/{}'.format(SERVER_IP, token)
+    verify_url  =   'http://{}/verify/{}'.format(IP, token)
     with app.app_context():
         html_data = render_template("email_confirmation.html",confirm_url = verify_url)
     send_mail(

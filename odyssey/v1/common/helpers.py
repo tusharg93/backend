@@ -4,12 +4,12 @@ import boto3
 class UploadToS3Helper:
     def __init__(self, bucket_name):
         self.bucket_name = bucket_name
-        self.base_uri = 'https://s3.us-east-2.amazonaws.com'
+        self.base_uri = 'https://s3-us-west-1.amazonaws.com'
 
-    def upload(self, file_name, content, content_type):
+    def upload(self, file_name, key, secret, content, content_type):
         app.logger.info("upload: bucket_name {}".format(self.bucket_name))
-        s3 = boto3.resource('s3',aws_access_key_id="AKIAIIF2K3IZKML62GWQ",
-         aws_secret_access_key="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")
+        s3 = boto3.resource('s3',aws_access_key_id=key,
+         aws_secret_access_key=secret)
         s3.Bucket(self.bucket_name).put_object(
             Key=file_name,
             Body=content,
