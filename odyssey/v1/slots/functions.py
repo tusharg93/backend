@@ -271,7 +271,7 @@ def update_holiday_days(gc_id, json_data):
     dates = list()
     for info in data:
         date = info.get("date")
-        date = datetime.strptime("%Y-%m-%d",date).date()
+        date = datetime.strptime(date,"%Y-%m-%d").date()
         name = info.get("name")
         all_flag = info.get("universal",False)
         obj = GCHolidaysDaysInfo(
