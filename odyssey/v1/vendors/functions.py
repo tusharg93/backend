@@ -1,7 +1,6 @@
 from odyssey import app, db
 from odyssey.v1.common.functions import generate_id
 from flask import render_template
-from odyssey.v1.common.constants import SERVER_IP
 from odyssey.v1.common.functions import send_mail, generate_confirmation_token, confirm_token
 from odyssey.v1.models.vendor_master import VendorMaster
 
