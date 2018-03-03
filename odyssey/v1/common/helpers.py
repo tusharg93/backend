@@ -8,7 +8,8 @@ class UploadToS3Helper:
 
     def upload(self, file_name, content, content_type):
         app.logger.info("upload: bucket_name {}".format(self.bucket_name))
-        s3 = boto3.resource('s3')
+        s3 = boto3.resource('s3',aws_access_key_id="AKIAIIF2K3IZKML62GWQ",
+         aws_secret_access_key="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")
         s3.Bucket(self.bucket_name).put_object(
             Key=file_name,
             Body=content,

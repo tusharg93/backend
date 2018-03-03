@@ -192,7 +192,7 @@ def update_week_type_slots(gc_id, json_data):
         #                                           table.c.season_id == season_id,
         #                                           table.c.day_type == day_type).all()
         db.session.execute(
-            "update \"gc_{}_slots\" set hole_9_price = {}, hole_18_price = {} , slot_status = '{}' where tee_time = '{}' and season_id = '{}' and day_type = '{}' and day in {} ;"
+            "update \"gc_{}_slots\" set hole_9_price = {}, hole_18_price = {} , slot_status = '{}' where tee_time = '{}' and season_id = '{}' and day_type = '{}' and day in '{}' ;"
                 .format(gc_id, hole_9_price, hole_18_price, slot_status, tee_time, season_id, day_type, days),
             bind=db.get_engine(app, 'base_db'))
         db.session.commit()
@@ -256,7 +256,7 @@ def apply_holiday(gc_id, dates):
                 weekend_rate_info = GCRatesInfo.query.filter(GCRatesInfo.season_id == table_data.season_id,
                                                              GCRatesInfo.gc_id == gc_id,
                                                              GCRatesInfo.day_type == weekend_id).first()
-                db.session.execute("update \"gc_{}_slots\" set hole_9_price = {}, hole_18_price = {} where date = {} ;".format(
+                db.session.execute("update \"gc_{}_slots\" set hole_9_price = {}, hole_18_price = {} where date = '{}' ;".format(
                     gc_id, weekend_rate_info.hole_9_price, weekend_rate_info.hole_18_price, date),bind=db.get_engine(app, 'base_db'))
                 db.session.commit()
     except:
@@ -291,11 +291,11 @@ def apply_closed(gc_id, dates):
             d = date[0]
             t = date[1]
             if t:
-                db.session.execute("update \"gc_{}_slots\" set slot_status = 'CLOSED' where date = {} and tee_time < {} ;".format(
+                db.session.execute("update \"gc_{}_slots\" set slot_status = 'CLOSED' where date = '{}' and tee_time < '{}' ;".format(
                     gc_id,d,t),bind=db.get_engine(app, 'base_db'))
             else:
                 db.session.execute(
-                    "update \"gc_{}_slots\" set slot_status = 'CLOSED' where date = {} ;".format(
+                    "update \"gc_{}_slots\" set slot_status = 'CLOSED' where date = '{}' ;".format(
                         gc_id, d), bind=db.get_engine(app, 'base_db'))
             db.session.commit()
     except:
@@ -346,9 +346,9 @@ def update_day_types(gc_id, weekdays, weekends):
             DaysTypeInfo.day_type).all()
         weekday_id = days_type[0].id
         weekend_id = days_type[0].id
-        db.session.execute("update \"gc_{}_slots\" set day_type = {} where day in {} ;".format(
+        db.session.execute("update \"gc_{}_slots\" set day_type = '{}' where day in '{}' ;".format(
                         gc_id, weekday_id,weekdays), bind=db.get_engine(app, 'base_db'))
-        db.session.execute("update \"gc_{}_slots\" set day_type = {} where day in {} ;".format(
+        db.session.execute("update \"gc_{}_slots\" set day_type = '{}' where day in '{}' ;".format(
             gc_id, weekend_id, weekends), bind=db.get_engine(app, 'base_db'))
         db.session.commit()
     except:
@@ -360,9 +360,9 @@ def update_weekly_off_day(gc_id, day):
     try:
         if not gc_id or not day:
             return
-        db.session.execute("update \"gc_{}_slots\" set slot_status = {} where slot_status = {} ;".format(
+        db.session.execute("update \"gc_{}_slots\" set slot_status = '{}' where slot_status = '{}' ;".format(
             gc_id,'OPEN','WEEKLY_OFF'), bind=db.get_engine(app, 'base_db'))
-        db.session.execute("update \"gc_{}_slots\" set slot_status = {} where day = {} ;".format(
+        db.session.execute("update \"gc_{}_slots\" set slot_status = '{}' where day = '{}' ;".format(
             gc_id, 'WEEKLY_OFF', day), bind=db.get_engine(app, 'base_db'))
         db.session.commit()
     except:

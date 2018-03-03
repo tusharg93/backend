@@ -1,4 +1,5 @@
 import os
+import logging.config
 
 from flask import Flask
 from flask_compress import Compress
@@ -51,3 +52,4 @@ Session(app)
 login_manager_v1 = LoginManager(app)
 compress = Compress(app)
 CORS(app, supports_credentials=True)
+logging.config.dictConfig(app.config.get('LOGGING'))

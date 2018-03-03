@@ -12,7 +12,7 @@ class ImageUploadAPI(Resource):
             user_id = g.user.id
             url = image_upload(user_id, request)
             return {"status": OK, "data":{"url":url},"msg": "success"},OK
-        except Exception, e:
+        except:
             return {"status": INTERNAL_SERVER_ERROR, "msg": "failure"},OK
 
     def put(self):
@@ -20,5 +20,5 @@ class ImageUploadAPI(Resource):
             user_id = g.user.id
             url = image_upload(user_id, request)
             return {"status": OK, "data":{"url":url}, "msg": "success"},OK
-        except Exception, e:
+        except:
             return {"status": INTERNAL_SERVER_ERROR, "msg": "failure"},OK

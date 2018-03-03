@@ -82,6 +82,7 @@ class GolfCourseMaster(db.Model):
             "price_includes":self.price_includes,
             "tnc":self.tnc,
             "cancel_policy":self.cancel_policy,
+            "duration":self.duration_live_slots,
             "tee_avl":self.tee_avl,
             "currency":self.currency,
             "time_zone":self.time_zone,
