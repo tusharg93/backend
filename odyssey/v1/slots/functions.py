@@ -246,7 +246,7 @@ def apply_holiday(gc_id, dates):
     from odyssey.v1.models.gc_rates_info import GCRatesInfo
     from odyssey.v1.models.days_type_info import DaysTypeInfo
     table = get_gc_slot_table_object("gc_{}_slots".format(gc_id))
-    weekend_id = DaysTypeInfo.query.filter(DaysTypeInfo.day_type =="Weekend").first().id
+    weekend_id = DaysTypeInfo.query.filter(DaysTypeInfo.day_type =="weekend").first().id
     try:
         for date in dates:
             table_data = db.session.query(table.c.season_id,table.c.day_type).filter(table.c.date == date).first()
