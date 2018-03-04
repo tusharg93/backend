@@ -240,7 +240,8 @@ def update_gc_fill_section_3(json_data, gc_id):
 def gc_fill_section_4(json_data, gc_id):
     from odyssey.v1.models.gc_seasons_info import GCSeasonsInfo
     from odyssey.v1.models.gc_rates_info import GCRatesInfo
-    import time
+    from odyssey.v1.slots.functions import slot_generator
+
     gc_object = GolfCourseMaster.query.get(gc_id)
     seasons_info  = json_data.get('seasons_info')
     for season_data in seasons_info:
@@ -276,6 +277,7 @@ def gc_fill_section_4(json_data, gc_id):
                         gc_season_obj.maintenance_etime = datetime.datetime.strptime(etime,'%H:%M').time()
         db.session.add(gc_season_obj)
     db.session.commit()
+    slot_generator(gc_id)
 
 def update_gc_fill_section_4(json_data, gc_id):
     from odyssey.v1.models.gc_seasons_info import GCSeasonsInfo

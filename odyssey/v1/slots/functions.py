@@ -32,6 +32,8 @@ def generate_slots(gc_object, today, year_end):
         print 'table not found hence creating'
         create_gc_slot_table(gc_id)
         table_object = get_gc_slot_table_object("gc_{}_slots".format(gc_id))
+    table_class_object = get_gc_table_class_object("gc_{}_slots".format(gc_id))
+    table_class_object.query.delete()
     gc_seasons_obj = GCSeasonsInfo.query.filter(GCSeasonsInfo.gc_id == gc_id).all()
     min_weekdays = gc_object.min_weekdays if gc_object.min_weekdays else 4
     min_weekends = gc_object.min_weekends if gc_object.min_weekends else 4
@@ -269,7 +271,7 @@ def apply_holiday(gc_id, dates):
         db.session.rollback()
         app.logger.error(traceback.print_exc())
 
-def update_holiday_days(gc_id, json_data):
+def create_holiday_days(gc_id, json_data):
     from odyssey.v1.models.gc_holidays_info import GCHolidaysDaysInfo
     data = json_data.get("data")
     dates = list()
@@ -286,6 +288,26 @@ def update_holiday_days(gc_id, json_data):
             all=all_flag
         )
         db.session.add(obj)
+        dates.append(date)
+    db.session.commit()
+    apply_holiday(gc_id, dates)
+
+def update_holiday_days(gc_id, json_data):
+    from odyssey.v1.models.gc_holidays_info import GCHolidaysDaysInfo
+    data = json_data.get("data")
+    dates = list()
+    for info in data:
+        date = info.get("date")
+        uid  = info.get("id")
+        date = datetime.strptime(date,"%Y-%m-%d").date()
+        name = info.get("name")
+        all_flag = info.get("universal",False)
+        obj = GCHolidaysDaysInfo.query.get(uid)
+        if obj:
+            obj.date = date
+            obj.name = name
+            obj.universal = all_flag
+            db.session.add(obj)
         dates.append(date)
     db.session.commit()
     apply_holiday(gc_id, dates)
@@ -309,7 +331,7 @@ def apply_closed(gc_id, dates):
         db.session.rollback()
         app.logger.error(traceback.print_exc())
 
-def update_closed_days(gc_id, json_data):
+def create_closed_days(gc_id, json_data):
     from odyssey.v1.models.gc_closed_days_info import GCClosedDaysInfo
     data = json_data.get("data")
     dates = list()
@@ -340,6 +362,31 @@ def update_closed_days(gc_id, json_data):
     db.session.commit()
     apply_closed(gc_id, dates)
 
+def update_closed_days(gc_id, json_data):
+    from odyssey.v1.models.gc_closed_days_info import GCClosedDaysInfo
+    data = json_data.get("data")
+    dates = list()
+    for info in data:
+        date = info.get("date")
+        uid  = info.get("id")
+        full_day = info.get("full_day",None)
+        start_time = None
+        obj = GCClosedDaysInfo.query.get(uid)
+        if obj:
+            if full_day and full_day == True:
+                obj.full_day = full_day
+                obj.start_time = None
+                obj.date = datetime.strptime(date,'%Y-%m-%d')
+            else:
+                start_time = info.get('start_time')
+                start_time = datetime.strptime(start_time, '%H:%M').time()
+                obj.full_day = False
+                obj.start_time = start_time
+                obj.date = datetime.strptime(date, '%Y-%m-%d')
+            db.session.add(obj)
+            dates.append([date,start_time])
+    db.session.commit()
+    apply_closed(gc_id, dates)
 
 def update_day_types(gc_id, weekdays, weekends):
     try:
