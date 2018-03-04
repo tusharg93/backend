@@ -41,7 +41,7 @@ def generate_slots(gc_object, today, year_end):
     weekends = gc_object.weekends.split(',')
     days_type = DaysTypeInfo.query.filter(DaysTypeInfo.day_type.in_(['weekday','weekend'])).order_by(DaysTypeInfo.day_type).all()
     weekday_id = days_type[0].id
-    weekend_id = days_type[0].id
+    weekend_id = days_type[1].id
     current_year = today_year
     maintenance_day = gc_object.maintenance_day
     maintenance_type = gc_object.maintenance_type
@@ -172,7 +172,7 @@ def update_week_type_slots(gc_id, json_data):
     slots = json_data.get('slots')
     table =  get_gc_table_class_object("gc_{}_slots".format(gc_id))
     for slot in slots:
-        tee_time = slot.get('tee_time')
+        tee_time = datetime.strptime(slot.get('tee_time'),"%H:%M").time()
         hole_9_price = slot.get('hole_9_price',None)
         hole_18_price = slot.get('hole_18_price',None)
         hole_9_flag = slot.get('hole_9_flag')
