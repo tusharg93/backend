@@ -11,10 +11,10 @@ class AuthAPI(Resource):
 
             response = process_auth(auth_function)
             return {
-                       'status': 'OK',
+                       'status': OK,
                        'data': response
                    } if response else {
-                'status': 'OK'
+                'status': OK
             }, OK
 
         except BadRequestException:
@@ -24,10 +24,10 @@ class AuthAPI(Resource):
             return {"status":NOT_FOUND,"error": "user not found"}, OK
 
         except UserWrongPasswordException:
-            return {"status":UNAUTHORIZED,"error": "invalid login details"}, UNAUTHORIZED
+            return {"status":UNAUTHORIZED,"error": "invalid login details"}, OK
 
         except EmailNotVerifiedException:
-            return {"status":UNAUTHORIZED, "error": "email not verified"}, UNAUTHORIZED
+            return {"status":UNAUTHORIZED, "error": "email not verified"}, OK
 
         except:
             import traceback

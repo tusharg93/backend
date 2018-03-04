@@ -48,8 +48,10 @@ def generate_slots(gc_object, today, year_end):
         end_date = gc_season_details.end_date
         season_id = gc_season_details.season_id
         maintenance_stime = None
+        maintenance_etime = None
         if maintenance_type == False:
             maintenance_stime = gc_season_details.maintenance_stime
+            maintenance_etime = gc_season_details.maintenance_etime
         if not start_date or not end_date:
             app.logger.info("Season {} duration not defined".format(season_id))
             continue
@@ -93,6 +95,7 @@ def generate_slots(gc_object, today, year_end):
         while start_date <= end_date:
                 status = 'OPEN'
                 special_stime = None
+                special_etime = None
                 current_start = datetime.combine(start_date,start_time)
                 current_end = datetime.combine(start_date,end_time)
                 day_id = weekday_id if current_start.strftime('%a') in weekdays else weekend_id
@@ -100,6 +103,7 @@ def generate_slots(gc_object, today, year_end):
                     status = 'WEEKLY_OFF'
                     if maintenance_stime:
                         special_stime = datetime.combine(start_date, maintenance_stime)
+                        special_etime = datetime.combine(start_date, maintenance_etime)
                 while current_start <= current_end:
                     if current_start > today:
                         d = dict()
@@ -115,7 +119,7 @@ def generate_slots(gc_object, today, year_end):
                         if not special_stime:
                             d['slot_status'] = status
                         else:
-                            if current_start < special_stime:
+                            if current_start >= special_stime and current_start <= special_etime:
                                 d['slot_status'] = status
                             else:
                                 d['slot_status'] = 'OPEN'

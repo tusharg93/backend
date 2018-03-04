@@ -98,7 +98,11 @@ class GolfCourseMaster(db.Model):
             "min_golfers_weekends":self.min_weekends,
             "min_golfers_weekdays":self.min_weekdays,
             "insta_url":self.insta_url,
-            "twiter_url":self.twitter_url,
+            "twitter_url":self.twitter_url,
+            "coordinates":{
+                "latitude": self.lat,
+                "longitude": self.long
+            },
             "facebook_url":self.facebook_url,
             "facilities":self.facilities,
             "logo_url":self.logo_url,

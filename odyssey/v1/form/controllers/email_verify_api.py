@@ -12,7 +12,7 @@ class EmailVerifyAPI(Resource):
         try:
             result    =   verify_email(request.args)
             if result:
-                return {"status": MSG_OK, "msg": "success"},OK
+                return {"status": OK, "msg": "success"},OK
             else:
                 return {"status":UNAUTHORIZED,"msg":"failure"},OK
         except Exception, e:

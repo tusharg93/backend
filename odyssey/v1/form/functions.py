@@ -70,7 +70,7 @@ def gc_fill_section_1(json_data, gc_id):
     from odyssey.v1.models.golf_course_master import GolfCourseMaster
     is_9_hole = json_data.get('hole_9', None)
     is_18_hole = json_data.get('hole_18', None)
-    tee_avl = json_data.get('tee_avl',None)
+    tee_avl = json_data.get('tee',None)
     currency = json_data.get('currency', None)
     time_zone = json_data.get('timezone',None)
     member_flag = json_data.get('member', None)
@@ -87,7 +87,7 @@ def gc_fill_section_1(json_data, gc_id):
         gc_details.is_guest = True if guest_flag else False
         gc_details.is_member=True if member_flag else False
         gc_details.is_online=True if online_flag else False
-        gc_details.duration=int(live_slots_duration) if live_slots_duration else 3
+        gc_details.duration_live_slots=int(live_slots_duration) if live_slots_duration else 3
         db.session.add(gc_details)
         db.session.commit()
 
@@ -95,7 +95,7 @@ def update_gc_fill_section_1(json_data, gc_id):
     from odyssey.v1.models.golf_course_master import GolfCourseMaster
     is_9_hole = json_data.get('hole_9', None)
     is_18_hole = json_data.get('hole_18', None)
-    tee_avl = json_data.get('tee_avl',None)
+    tee_avl = json_data.get('tee',None)
     currency = json_data.get('currency', None)
     time_zone = json_data.get('timezone',None)
     member_flag = json_data.get('member', None)
@@ -112,7 +112,7 @@ def update_gc_fill_section_1(json_data, gc_id):
         gc_details.is_guest = True if guest_flag else False
         gc_details.is_member=True if member_flag else False
         gc_details.is_online=True if online_flag else False
-        gc_details.duration=int(live_slots_duration) if live_slots_duration else 3
+        gc_details.duration_live_slots=int(live_slots_duration) if live_slots_duration else 3
         db.session.add(gc_details)
         db.session.commit()
 
@@ -379,7 +379,7 @@ def fill_gc_profile(json_data, gc_id):
     from odyssey.v1.models.golf_course_master import GolfCourseMaster
     gc_object = GolfCourseMaster.query.get(gc_id)
     description = json_data.get('about',None)
-    course_info = json_data.get('course_info',None)
+    course_info = json_data.get('course',None)
     facilities = json_data.get('facilities',None)
     website_url = json_data.get('website_url',None)
     contact_name = json_data.get('contact_name',None)
@@ -407,7 +407,7 @@ def fill_gc_profile(json_data, gc_id):
         weekend_hrs_string = weekend_start_time + " to " + weekend_end_time
     else:
         weekend_hrs_string = None
-    facebook_url = json_data.get('fb_url',None)
+    facebook_url = json_data.get('facebook_url',None)
     twitter_url = json_data.get('twitter_url',None)
     insta_url = json_data.get('insta_url',None)
     gc_object.description = description
