@@ -155,7 +155,7 @@ def get_week_type_slots(gc_id, query_params):
     total_week_type_slots = db.session.query(table.c.date.label('date'),func.count('*').label('slots_count')).filter(table.c.season_id == season_id,
                                                          table.c.day_type == day_type_id,
                                                          table.c.date >= next_date
-                                                         ).group_by(table.c.date).limit(1)
+                                                         ).group_by(table.c.date).first()
     week_type_slots = db.session.query(table).filter(table.c.season_id == season_id,
                                                    table.c.day_type == day_type_id,
                                                    table.c.date == total_week_type_slots.date
