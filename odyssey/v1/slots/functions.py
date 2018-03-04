@@ -248,7 +248,7 @@ def update_date_wise_slot(gc_id, json_data):
         update_dict[slot_id]['hole_18_price'] = hole_18_price
         update_dict[slot_id]['slot_status'] = slot_status
     slot_ids = update_dict.keys()
-    tee_slots = db.session.query(table).filter(table.id_in(slot_ids)).all()
+    tee_slots = db.session.query(table).filter(table.id.in_(slot_ids)).all()
     for slot in tee_slots:
         data = update_dict[slot.id]
         slot.hole_9_price = data['hole_9_price']

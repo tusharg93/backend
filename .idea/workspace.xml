@@ -27,8 +27,8 @@
       <file leaf-file-name="functions.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/odyssey/v1/slots/functions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="503">
-              <caret line="257" column="16" lean-forward="false" selection-start-line="257" selection-start-column="16" selection-end-line="257" selection-end-column="16" />
+            <state relative-caret-position="485">
+              <caret line="250" column="59" lean-forward="false" selection-start-line="250" selection-start-column="59" selection-end-line="250" selection-end-column="59" />
               <folding>
                 <element signature="e#0#27#0" expanded="true" />
               </folding>
@@ -1110,8 +1110,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/odyssey/v1/slots/functions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="503">
-          <caret line="257" column="16" lean-forward="false" selection-start-line="257" selection-start-column="16" selection-end-line="257" selection-end-column="16" />
+        <state relative-caret-position="485">
+          <caret line="250" column="59" lean-forward="false" selection-start-line="250" selection-start-column="59" selection-end-line="250" selection-end-column="59" />
           <folding>
             <element signature="e#0#27#0" expanded="true" />
           </folding>
