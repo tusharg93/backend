@@ -255,7 +255,7 @@ def update_date_wise_slot(gc_id, json_data):
         slot.hole_18_price = data['hole_18_price']
         slot.slot_status = data['slot_status']
         db.session.add(slot)
-    if len(tee_slots) > 0:
+    if tee_slots:
         db.session.commit()
 
 def apply_holiday(gc_id, dates):
