@@ -140,33 +140,27 @@ def generate_slots(gc_object, today, year_end):
 
 
 def get_week_type_slots(gc_id, query_params):
-    table = get_gc_slot_table_object("gc_{}_slots".format(gc_id))
-    if table is None:
-        app.logger.error("Table doesnt exist")
-        return list()
     season_id = query_params.get("season_id")
     day_type_id = query_params.get("day_type")
-    #day_type_id = DaysTypeInfo.query.filter(DaysTypeInfo.name == day_type).first().id
-    next_date = (datetime.today() + timedelta(days=1)).date()
-    # gc_season_info = db.session.query(GCSeasonsInfo.start_time,GCSeasonsInfo.end_time).filter(
-    #     GCSeasonsInfo.gc_id == gc_id,
-    #     GCSeasonsInfo.season_id == season_id
-    # ).first()
-    total_week_type_slots = db.session.query(table.c.date.label('date'),func.count('*').label('slots_count')).filter(table.c.season_id == season_id,
-                                                         table.c.day_type == day_type_id,
-                                                         table.c.date >= next_date
-                                                         ).group_by(table.c.date).first()
-    week_type_slots = db.session.query(table).filter(table.c.season_id == season_id,
-                                                   table.c.day_type == day_type_id,
-                                                   table.c.date == total_week_type_slots.date
-                                                     ).all()
+    gc_season_info = db.session.query(GCSeasonsInfo.start_time,GCSeasonsInfo.end_time, GCSeasonsInfo.tee_interval).filter(
+        GCSeasonsInfo.gc_id == gc_id,
+        GCSeasonsInfo.season_id == season_id
+    ).first()
+    gc_rates_info = GCRatesInfo.query.filter(GCRatesInfo.season_id == season_id,
+                                             GCRatesInfo.gc_id == gc_id,
+                                             GCRatesInfo.day_type == day_type_id).first()
+    date = datetime.today().date()
+    start_time = datetime.combine(date,gc_season_info.start_time)
+    end_time = datetime.combine(date,gc_season_info.end_time)
+    interval = gc_season_info.tee_interval
     result = list()
-    for slot in week_type_slots:
+    while start_time <= end_time:
         d = dict()
-        d['tee_time'] = slot.tee_time.strftime('%H:%M')
-        d['hole_9_price'] = str(slot.hole_9_price) if slot.hole_9_price else "",
-        d['hole_18_price'] = str(slot.hole_18_price) if slot.hole_18_price else "",
+        d['tee_time'] = start_time.strftime('%H:%M')
+        d['hole_9_price'] = str(gc_rates_info.hole_9_price) if gc_rates_info.hole_9_price else None,
+        d['hole_18_price'] = str(gc_rates_info.hole_18_price) if gc_rates_info.hole_18_price else None,
         result.append(d)
+        start_time = start_time + timedelta(minutes=int(interval))
     return result
 
 
