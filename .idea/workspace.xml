@@ -28,8 +28,8 @@
       <file leaf-file-name="functions.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/odyssey/v1/slots/functions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="142">
-              <caret line="157" column="89" lean-forward="false" selection-start-line="157" selection-start-column="89" selection-end-line="157" selection-end-column="89" />
+            <state relative-caret-position="-4609">
+              <caret line="143" column="20" lean-forward="false" selection-start-line="143" selection-start-column="20" selection-end-line="143" selection-end-column="20" />
               <folding />
             </state>
           </provider>
@@ -68,8 +68,8 @@
       <file leaf-file-name="manage_slots_api.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/odyssey/v1/slots/controllers/manage_slots_api.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="359">
-              <caret line="37" column="63" lean-forward="false" selection-start-line="37" selection-start-column="63" selection-end-line="37" selection-end-column="63" />
+            <state relative-caret-position="413">
+              <caret line="31" column="68" lean-forward="false" selection-start-line="31" selection-start-column="68" selection-end-line="31" selection-end-column="68" />
               <folding>
                 <element signature="e#0#34#0" expanded="true" />
               </folding>
@@ -1108,16 +1108,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/odyssey/v1/slots/functions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="142">
-          <caret line="157" column="89" lean-forward="false" selection-start-line="157" selection-start-column="89" selection-end-line="157" selection-end-column="89" />
+        <state relative-caret-position="-4609">
+          <caret line="143" column="20" lean-forward="false" selection-start-line="143" selection-start-column="20" selection-end-line="143" selection-end-column="20" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/odyssey/v1/slots/controllers/manage_slots_api.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="359">
-          <caret line="37" column="63" lean-forward="false" selection-start-line="37" selection-start-column="63" selection-end-line="37" selection-end-column="63" />
+        <state relative-caret-position="413">
+          <caret line="31" column="68" lean-forward="false" selection-start-line="31" selection-start-column="68" selection-end-line="31" selection-end-column="68" />
           <folding>
             <element signature="e#0#34#0" expanded="true" />
           </folding>

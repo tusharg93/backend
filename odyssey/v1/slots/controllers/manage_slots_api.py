@@ -29,6 +29,7 @@ class ManageSlotsAPI(Resource):
     def put(self):
         try:
             gc_id = g.user.id
+            app.logger.info("Request json is {}".format(request.json))
             filter_type = request.json.get('type')
             if filter_type == "seasons":
                 update_week_type_slots(gc_id, request.json)
