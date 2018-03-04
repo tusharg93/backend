@@ -59,6 +59,8 @@ def user_login(member_data):
         flag  = True
         if not member.activated_on:
             member.activated_on = datetime.datetime.now(timezone('UTC'))
+            db.session.add(member)
+            db.session.commit()
             flag = False
         # if not source or source == "golf_course":
         #     create_session_key(member.id, session.sid)

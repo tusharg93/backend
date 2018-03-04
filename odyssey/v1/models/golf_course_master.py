@@ -80,6 +80,7 @@ class GolfCourseMaster(db.Model):
             "is_hole_9":self.hole_9_flag,
             "is_hole_18":self.hole_18_flag,
             "price_includes":self.price_includes,
+            "about":self.description,
             "tnc":self.tnc,
             "cancel_policy":self.cancel_policy,
             "duration":self.duration_live_slots,

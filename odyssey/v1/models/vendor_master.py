@@ -80,7 +80,7 @@ class VendorMaster(db.Model):
 
     def verify_password(self, password):
         try:
-            return pwd_context.verify(password, self.password_hash)
+            return pwd_context.verify(password, self.password)
         except TypeError:
             return False
         except ValueError:
