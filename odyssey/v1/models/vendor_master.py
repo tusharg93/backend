@@ -57,6 +57,34 @@ class VendorMaster(db.Model):
             "logo_url":self.logo_url
         }
     @property
+    def dashboard_serialize(self):
+        return {
+            "id":self.id,
+            "about":self.description,
+            "logo_url":self.logo_url,
+            "mobile":self.mobile,
+            "country_code":self.company_country_code,
+            "email":self.email,
+            "weekend_operating_hrs":self.weekend_hrs,
+            "weekday_operating_hrs":self.weekday_hrs,
+            "website_ur;":self.website_url,
+            "address_line_1":self.address_1,
+            "address_line_2":self.address_2,
+            "facebook_url":self.facebook_url,
+            "twitter_url":self.twitter_url,
+            "person_name":self.person_name,
+            "person_mobile":self.person_contact,
+            "person_country_code":self.person_country_code,
+            "gplus_url":self.gplus_url,
+            "linkedin_url":self.linkedin_url,
+            "insta_url":self.instagram_url,
+            "company_name":self.company_name,
+            "country":self.country,
+            "city":self.city,
+            "designation":self.designation,
+
+        }
+    @property
     def is_authenticated(self):
         return True
 

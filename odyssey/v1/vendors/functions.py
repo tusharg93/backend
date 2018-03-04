@@ -100,3 +100,71 @@ def create_vendor_profile(json_data, vendor_id):
     v_object.gplus_url = gplus_url
     db.session.add(v_object)
     db.session.commit()
+
+def manage_course_section(vendor_id):
+    try:
+        from odyssey.v1.models.golf_course_master import GolfCourseMaster
+        from odyssey.v1.models.vendor_course_contract import VendorCourseContract
+        result = dict()
+        result['pending']  =  list()
+        result['accepted'] = list()
+        result['declined'] = list()
+        result['all']     = list()
+        contract = VendorCourseContract.query.filter(VendorCourseContract.v_id == vendor_id).all()
+        contract_ids = list()
+        if contract:
+            for relation in contract:
+                d = dict()
+                contract_ids.append(relation.gc_id)
+                gc_object = GolfCourseMaster.query.get(relation.gc_id)
+                d['id'] = relation.id
+                d['gc_id'] = relation.gc_id
+                d['status'] = relation.request_status
+                d['request_by'] = relation.request_by
+                d['gc__name'] = gc_object.name
+                d['logo_url'] = gc_object.logo_url
+                result[d['status'].lower()].append(d)
+        if len(contract_ids) > 0:
+            course_data = GolfCourseMaster.query.filter(~GolfCourseMaster.id.in_(contract_ids)).all()
+        else:
+            course_data = GolfCourseMaster.query.all()
+        if course_data:
+            result['all'] = [x.contract_serialize for x in course_data]
+        return result
+    except:
+        import traceback
+        app.logger.info("error in fetching vendor data in gc dashboard")
+        app.logger.error(traceback.print_exc())
+        db.session.rollback()
+        return dict()
+
+def load_home_page_data(vendor_id):
+    result = dict()
+    v_object = VendorMaster.query.get(vendor_id)
+    if not v_object:
+        return result
+    result['basic_info'] = dict()
+    result['basic_info'] = v_object.dashboard_serialize
+    result['manage_course'] = dict()
+    result['manage_course'] = manage_course_section(vendor_id)
+    return result
+
+def course_request(vendor_id, json_data):
+    from odyssey.v1.models.vendor_course_contract import VendorCourseContract
+    relation_id = json_data.get('id',None)
+    gc_id = json_data.get('gc_id',None)
+    request_status = json_data.get('status')
+    if not gc_id:
+        return
+    if not relation_id:
+        contract = VendorCourseContract(
+            id=generate_id(),
+            v_id=vendor_id,
+            gc_id=gc_id,
+            request_by=vendor_id
+        )
+        db.session.add(contract)
+    else:
+        contract = VendorCourseContract.query.get(relation_id)
+        contract.request_status = request_status
+    db.session.commit()

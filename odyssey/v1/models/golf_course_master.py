@@ -73,6 +73,15 @@ class GolfCourseMaster(db.Model):
         #self.created_on = kwargs.get('created_on')
 
     @property
+    def contract_serialize(self):
+        return {
+            "gc_id":self.id,
+            "gc_name":self.name,
+            "logo_url":self.logo_url,
+            "website_url":self.website_url,
+            "person_name":self.contact_name
+        }
+    @property
     def dashboard_serialize(self):
         return {
             "id":self.id,
