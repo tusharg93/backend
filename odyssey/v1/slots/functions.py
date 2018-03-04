@@ -170,7 +170,7 @@ def update_week_type_slots(gc_id, json_data):
     days = json_data.get('days')
     days = tuple(days)
     slots = json_data.get('slots')
-    table =  get_gc_slot_table_object("gc_{}_slots".format(gc_id))
+    table =  get_gc_table_class_object("gc_{}_slots".format(gc_id))
     for slot in slots:
         tee_time = slot.get('tee_time')
         hole_9_price = slot.get('hole_9_price',None)
@@ -188,14 +188,21 @@ def update_week_type_slots(gc_id, json_data):
         slot_status = slot.get('slot_status',None)
         if not slot_status:
             slot_status = 'OPEN'
-        #tee_slots = db.session.query(table).filter(table.c.tee_time == tee_time,
-        #                                           table.c.season_id == season_id,
-        #                                           table.c.day_type == day_type).all()
-        db.session.execute(
-            "update \"gc_{}_slots\" set hole_9_price = {}, hole_18_price = {} , slot_status = '{}' where tee_time = '{}' and season_id = '{}' and day_type = '{}' and day in '{}' ;"
-                .format(gc_id, hole_9_price, hole_18_price, slot_status, tee_time, season_id, day_type, days),
-            bind=db.get_engine(app, 'base_db'))
+        tee_slots = db.session.query(table).filter(table.tee_time == tee_time,
+                                                  table.season_id == season_id,
+                                                  table.day_type == day_type,
+                                                  table.day.in_(days)).all()
+        for slot in tee_slots:
+            slot.hole_9_price = hole_9_price
+            slot.hole_18_price = hole_18_price
+            slot.slot_status = slot_status
+            db.session.add(slot)
         db.session.commit()
+        # db.session.execute(
+        #     "update \"gc_{}_slots\" set hole_9_price = {}, hole_18_price = {} , slot_status = '{}' where tee_time = '{}' and season_id = '{}' and day_type = '{}' and day in '{}' ;"
+        #         .format(gc_id, hole_9_price, hole_18_price, slot_status, tee_time, season_id, day_type, days),
+        #     bind=db.get_engine(app, 'base_db'))
+        # db.session.commit()
 
 def get_date_wise_slot(gc_id, query_data):
     date = query_data.get("date")
@@ -220,8 +227,9 @@ def get_date_wise_slot(gc_id, query_data):
     return result
 
 def update_date_wise_slot(gc_id, json_data):
-    table = get_gc_slot_table_object("gc_{}_slots".format(gc_id))
+    table = get_gc_table_class_object("gc_{}_slots".format(gc_id))
     slots = json_data.get('slots')
+    update_dict = dict()
     for slot in slots:
         slot_id = slot.get('id')
         hole_9_price = slot.get('hole_9_price',None)
@@ -235,11 +243,19 @@ def update_date_wise_slot(gc_id, json_data):
         slot_status = slot.get('slot_status',None)
         if not slot_status:
             slot_status = 'OPEN'
-        db.session.execute(
-            "update \"gc_{}_slots\" set hole_9_price = {}, hole_18_price = {} , slot_status = '{}' where id = '{}';"
-                .format(gc_id, hole_9_price, hole_18_price, slot_status, slot_id),
-            bind=db.get_engine(app, 'base_db'))
-    if len(slots) > 0:
+        update_dict[slot_id] = dict()
+        update_dict[slot_id]['hole_9_price'] = hole_9_price
+        update_dict[slot_id]['hole_18_price'] = hole_18_price
+        update_dict[slot_id]['slot_status'] = slot_status
+    slot_ids = update_dict.keys()
+    tee_slots = db.session.query(table).filter(table.id_in(slot_ids)).all()
+    for slot in tee_slots:
+        data = update_dict[slot.id]
+        slot.hole_9_price = data['hole_9_price']
+        slot.hole_18_price = data['hole_18_price']
+        slot.slot_status = data['slot_status']
+        db.session.add(slot)
+    if len(tee_slots) > 0:
         db.session.commit()
 
 def apply_holiday(gc_id, dates):
