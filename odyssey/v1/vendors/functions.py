@@ -119,7 +119,8 @@ def manage_course_section(vendor_id):
                 gc_object = GolfCourseMaster.query.get(relation.gc_id)
                 d['id'] = relation.id
                 d['gc_id'] = relation.gc_id
-                d['status'] = relation.request_status
+                d['status'] = relation.final_status
+                d['requestor_status'] = relation.requestor_status
                 d['request_by'] = relation.request_by
                 d['gc__name'] = gc_object.name
                 d['logo_url'] = gc_object.logo_url
@@ -161,10 +162,12 @@ def course_request(vendor_id, json_data):
             id=generate_id(),
             v_id=vendor_id,
             gc_id=gc_id,
-            request_by=vendor_id
+            request_by=vendor_id,
+            requestor_status=request_status,
+            final_status='PENDING'
         )
         db.session.add(contract)
     else:
         contract = VendorCourseContract.query.get(relation_id)
-        contract.request_status = request_status
+        contract.final_status = request_status
     db.session.commit()

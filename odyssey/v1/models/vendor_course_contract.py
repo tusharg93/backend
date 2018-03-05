@@ -10,7 +10,8 @@ class VendorCourseContract(db.Model):
     gc_id = db.Column(db.String,db.ForeignKey('{}.id'.format(GOLF_COURSE_MASTER)))
     v_id = db.Column(db.String,db.ForeignKey('{}.id'.format(VENDOR_MASTER)))
     request_by = db.Column(db.String)
-    request_status = db.Column(db.String,default="PENDING")
+    final_status = db.Column(db.String)
+    requestor_status = db.Column(db.String)
     created_on = db.Column(db.DateTime,default=datetime.datetime.utcnow)
     last_updated_on = db.Column(db.DateTime,onupdate=datetime.datetime.utcnow)
 
@@ -19,3 +20,5 @@ class VendorCourseContract(db.Model):
         self.gc_id = kwargs.get('gc_id')
         self.v_id = kwargs.get('v_id')
         self.request_by = kwargs.get('request_by')
+        self.requestor_status = kwargs.get('requestor_status')
+        self.final_status = kwargs.get('final_status')

@@ -454,8 +454,9 @@ def manage_vendor_section(gc_id):
                 vendor_obj = VendorMaster.query.get(relation.v_id)
                 d['id'] = relation.id
                 d['v_id'] = relation.v_id
-                d['status'] = relation.request_status
+                d['status'] = relation.final_status
                 d['request_by'] = relation.request_by
+                d['requestor_status'] =relation.requestor_status
                 d['v_name'] = vendor_obj.name
                 d['logo_url'] = vendor_obj.logo_url
                 result[d['status'].lower()].append(d)
@@ -485,12 +486,14 @@ def vendor_request(gc_id, json_data):
             id=generate_id(),
             v_id=v_id,
             gc_id=gc_id,
-            request_by=gc_id
+            request_by=gc_id,
+            requestor_status=request_status,
+            final_status='PENDING'
         )
         db.session.add(contract)
     else:
         contract = VendorCourseContract.query.get(relation_id)
-        contract.request_status = request_status
+        contract.final_status = request_status
     db.session.commit()
 
 def load_home_page_data(gc_id):
