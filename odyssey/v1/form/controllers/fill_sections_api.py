@@ -47,7 +47,7 @@ class FillSectionsAPI(Resource):
             elif section == '2':
                 update_gc_fill_section_2(request.json, gc_id)
             elif section == '3':
-                update_gc_fill_section_3(request.json, gc_id)
+                gc_fill_section_3(request.json, gc_id)
             elif section == '4':
                 update_gc_fill_section_4(request.json, gc_id)
             elif section == '8':

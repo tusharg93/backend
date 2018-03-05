@@ -166,6 +166,8 @@ def update_gc_fill_section_2(json_data, gc_id):
 def gc_fill_section_3(json_data, gc_id):
     from odyssey.v1.models.season_master import SeasonsMaster
     from odyssey.v1.models.gc_seasons_info import GCSeasonsInfo
+    from odyssey.v1.models.gc_rates_info import GCRatesInfo
+    db.session.query(GCSeasonsInfo).delete()
     seasons = json_data.get('seasons')
     for season in seasons:
         season_id = season.get('id',None)
@@ -194,6 +196,7 @@ def gc_fill_section_3(json_data, gc_id):
         )
         db.session.add(gc_season_obj)
     db.session.commit()
+    db.session.query(GCRatesInfo).delete()
 
 
 def update_gc_fill_section_3(json_data, gc_id):
