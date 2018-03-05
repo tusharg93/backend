@@ -38,7 +38,7 @@ def register_form_data(form_data):
     db.session.commit()
     create_gc_slot_table(gc_object.id)
     token   =   generate_confirmation_token(email=email)
-    verify_url  =   'http://{}/verify/{}'.format(IP, token)
+    verify_url  =   'http://{}:5000/verify/{}'.format(IP, token)
     with app.app_context():
         html_data = render_template("email_confirmation.html",confirm_url = verify_url)
     send_mail(
@@ -309,7 +309,7 @@ def update_gc_fill_section_4(json_data, gc_id):
             db.session.add(gc_season_obj)
         db.session.commit()
         slot_generator(gc_id)
-        
+
 def gc_fill_section_8(json_data, gc_id):
     gc_object = GolfCourseMaster.query.filter(GolfCourseMaster.id == gc_id).first()
     price_inclusions = json_data.get("price_includes",None)

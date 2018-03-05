@@ -37,7 +37,7 @@ def register_vendor_data(form_data):
     db.session.add(vendor_object)
     db.session.commit()
     token = generate_confirmation_token(email=email)
-    verify_url = 'http://{}/verify/{}?type=vendor'.format(IP, token)
+    verify_url = 'http://{}:5000/verify/{}?type=vendor'.format(IP, token)
     with app.app_context():
         html_data = render_template("email_confirmation.html", confirm_url=verify_url)
     send_mail(
