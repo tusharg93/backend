@@ -457,7 +457,7 @@ def manage_vendor_section(gc_id):
                 d['status'] = relation.final_status
                 d['request_by'] = relation.request_by
                 d['requestor_status'] =relation.requestor_status
-                d['v_name'] = vendor_obj.name
+                d['v_name'] = vendor_obj.company_name
                 d['logo_url'] = vendor_obj.logo_url
                 result[d['status'].lower()].append(d)
         if len(contract_ids) > 0:

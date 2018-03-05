@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="9b24b5a3-f90b-474f-b0e7-841aa54438a1" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/odyssey/v1/form/functions.py" afterPath="$PROJECT_DIR$/odyssey/v1/form/functions.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/odyssey/v1/models/vendor_course_contract.py" afterPath="$PROJECT_DIR$/odyssey/v1/models/vendor_course_contract.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/odyssey/v1/vendors/functions.py" afterPath="$PROJECT_DIR$/odyssey/v1/vendors/functions.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -58,14 +56,12 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="manage_slots_api.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/odyssey/v1/slots/controllers/manage_slots_api.py">
+      <file leaf-file-name="vendor_master.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/odyssey/v1/models/vendor_master.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="612">
-              <caret line="34" column="26" lean-forward="false" selection-start-line="34" selection-start-column="26" selection-end-line="34" selection-end-column="26" />
-              <folding>
-                <element signature="e#0#34#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="270">
+              <caret line="19" column="36" lean-forward="true" selection-start-line="19" selection-start-column="36" selection-end-line="19" selection-end-column="36" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -82,20 +78,20 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="functions.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="functions.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/odyssey/v1/form/functions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="808">
-              <caret line="495" column="46" lean-forward="false" selection-start-line="495" selection-start-column="32" selection-end-line="495" selection-end-column="46" />
+            <state relative-caret-position="430">
+              <caret line="459" column="48" lean-forward="false" selection-start-line="459" selection-start-column="48" selection-end-line="459" selection-end-column="48" />
               <folding>
                 <element signature="e#0#65#0" expanded="true" />
-                <marker date="1520273667042" expanded="true" signature="1088:1948" ph="..." />
+                <marker date="1520274540162" expanded="true" signature="1088:1948" ph="..." />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="vendor_course_contract.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="vendor_course_contract.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/odyssey/v1/models/vendor_course_contract.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="378">
@@ -108,7 +104,7 @@
       <file leaf-file-name="fill_sections_api.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/odyssey/v1/form/controllers/fill_sections_api.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="233">
+            <state relative-caret-position="247">
               <caret line="51" column="32" lean-forward="true" selection-start-line="51" selection-start-column="32" selection-end-line="51" selection-end-column="32" />
               <folding />
             </state>
@@ -118,7 +114,7 @@
       <file leaf-file-name="functions.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/odyssey/v1/vendors/functions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="881">
+            <state relative-caret-position="1151">
               <caret line="171" column="29" lean-forward="false" selection-start-line="171" selection-start-column="29" selection-end-line="171" selection-end-column="29" />
               <folding />
             </state>
@@ -212,8 +208,8 @@
         <option value="$PROJECT_DIR$/odyssey/v1/common/functions.py" />
         <option value="$PROJECT_DIR$/odyssey/v1/form/controllers/fill_sections_api.py" />
         <option value="$PROJECT_DIR$/odyssey/v1/models/vendor_course_contract.py" />
-        <option value="$PROJECT_DIR$/odyssey/v1/form/functions.py" />
         <option value="$PROJECT_DIR$/odyssey/v1/vendors/functions.py" />
+        <option value="$PROJECT_DIR$/odyssey/v1/form/functions.py" />
       </list>
     </option>
   </component>
@@ -967,13 +963,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/odyssey/v1/models/vendor_master.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="20" column="36" lean-forward="false" selection-start-line="20" selection-start-column="36" selection-end-line="20" selection-end-column="36" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/odyssey/v1/models/gc_holidays_info.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="216">
@@ -1074,14 +1063,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/odyssey/v1/form/controllers/fill_sections_api.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="233">
-          <caret line="51" column="32" lean-forward="true" selection-start-line="51" selection-start-column="32" selection-end-line="51" selection-end-column="32" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/odyssey/v1/slots/functions.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-2993">
@@ -1092,30 +1073,46 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/odyssey/v1/form/functions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="808">
-          <caret line="495" column="46" lean-forward="false" selection-start-line="495" selection-start-column="32" selection-end-line="495" selection-end-column="46" />
-          <folding>
-            <element signature="e#0#65#0" expanded="true" />
-            <marker date="1520273667042" expanded="true" signature="1088:1948" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/odyssey/v1/vendors/functions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="881">
-          <caret line="171" column="29" lean-forward="false" selection-start-line="171" selection-start-column="29" selection-end-line="171" selection-end-column="29" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/odyssey/v1/models/vendor_course_contract.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="378">
           <caret line="23" column="52" lean-forward="false" selection-start-line="23" selection-start-column="52" selection-end-line="23" selection-end-column="52" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odyssey/v1/form/controllers/fill_sections_api.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="247">
+          <caret line="51" column="32" lean-forward="true" selection-start-line="51" selection-start-column="32" selection-end-line="51" selection-end-column="32" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odyssey/v1/vendors/functions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1151">
+          <caret line="171" column="29" lean-forward="false" selection-start-line="171" selection-start-column="29" selection-end-line="171" selection-end-column="29" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odyssey/v1/models/vendor_master.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="270">
+          <caret line="19" column="36" lean-forward="true" selection-start-line="19" selection-start-column="36" selection-end-line="19" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odyssey/v1/form/functions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="430">
+          <caret line="459" column="48" lean-forward="false" selection-start-line="459" selection-start-column="48" selection-end-line="459" selection-end-column="48" />
+          <folding>
+            <element signature="e#0#65#0" expanded="true" />
+            <marker date="1520274540162" expanded="true" signature="1088:1948" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>
