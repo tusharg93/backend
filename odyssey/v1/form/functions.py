@@ -199,7 +199,6 @@ def gc_fill_section_3(json_data, gc_id):
 def update_gc_fill_section_3(json_data, gc_id):
     from odyssey.v1.models.season_master import SeasonsMaster
     from odyssey.v1.models.gc_seasons_info import GCSeasonsInfo
-    from odyssey.v1.slots.functions import update_season_dates_slot
     seasons = json_data.get('seasons')
     for season in seasons:
         uid = season.get('uid', None)
@@ -221,19 +220,11 @@ def update_gc_fill_section_3(json_data, gc_id):
         gc_season_obj = None
         if uid:
             gc_season_obj = GCSeasonsInfo.query.get(uid)
-        if gc_season_obj:
-                gc_season_obj.season_id = season_id
-                gc_season_obj.start_date = season_start
-                gc_season_obj.end_date =  season_end
-        else:
-            gc_season_obj = GCSeasonsInfo(
-                id =  generate_id(),
-                gc_id=gc_id,
-                season_id=season_id,
-                start_date=season_start,
-                end_date=season_end
-            )
-        db.session.add(gc_season_obj)
+            if gc_season_obj:
+                    gc_season_obj.season_id = season_id
+                    gc_season_obj.start_date = season_start
+                    gc_season_obj.end_date =  season_end
+                    db.session.add(gc_season_obj)
     db.session.commit()
     #update_season_dates_slot(gc_id)
 
@@ -282,6 +273,7 @@ def gc_fill_section_4(json_data, gc_id):
 def update_gc_fill_section_4(json_data, gc_id):
     from odyssey.v1.models.gc_seasons_info import GCSeasonsInfo
     from odyssey.v1.models.gc_rates_info import GCRatesInfo
+    from odyssey.v1.slots.functions import slot_generator
     seasons_info  = json_data.get('seasons_info')
     gc_object = GolfCourseMaster.query.get(gc_id)
     for season_data in seasons_info:
@@ -316,7 +308,8 @@ def update_gc_fill_section_4(json_data, gc_id):
                         gc_season_obj.maintenance_etime = datetime.datetime.strptime(etime,'%H:%M').time()
             db.session.add(gc_season_obj)
         db.session.commit()
-
+        slot_generator(gc_id)
+        
 def gc_fill_section_8(json_data, gc_id):
     gc_object = GolfCourseMaster.query.filter(GolfCourseMaster.id == gc_id).first()
     price_inclusions = json_data.get("price_includes",None)

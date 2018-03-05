@@ -271,9 +271,9 @@ def upload_image_to_s3(image):
         bucket_name = app.config.get('AWS_BUCKET_URL')
         app.logger.info("upload_image: bucket_name {}".format(bucket_name))
         upload_helper = UploadToS3Helper(bucket_name)
-        #picture_id = str(generate_id())
-        app.logger.info("IMAGE: name: {} : content_type :{}".format(picture.filename, picture.content_type ))
-        url = upload_helper.upload(picture.filename, key, secret, picture.read(), picture.content_type)
+        picture_id = str(generate_id())
+        app.logger.info("IMAGE: name: {} id {}: content_type :{}".format(picture.filename, picture_id, picture.content_type ))
+        url = upload_helper.upload("image-{}".format(picture_id), key, secret, picture.read(), picture.content_type)
         return url
 
 
