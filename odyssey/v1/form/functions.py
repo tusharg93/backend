@@ -293,7 +293,7 @@ def update_gc_fill_section_4(json_data, gc_id):
             gc_season_obj.tee_interval = time_interval
             rates = season_data.get('rates')
             for rate in rates:
-                rate_id = rate.get('id')
+                rate_id = rate.get('uid')
                 if rate_id:
                     gc_rates_obj = GCRatesInfo.query.get(rate_id)
                     gc_rates_obj.season_id = season_id

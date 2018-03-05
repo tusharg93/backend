@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9b24b5a3-f90b-474f-b0e7-841aa54438a1" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/odyssey/v1/form/controllers/fill_sections_api.py" afterPath="$PROJECT_DIR$/odyssey/v1/form/controllers/fill_sections_api.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/odyssey/v1/form/functions.py" afterPath="$PROJECT_DIR$/odyssey/v1/form/functions.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -81,24 +80,24 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="functions.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="functions.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/odyssey/v1/form/functions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-311">
-              <caret line="198" column="42" lean-forward="false" selection-start-line="198" selection-start-column="42" selection-end-line="198" selection-end-column="42" />
+            <state relative-caret-position="340">
+              <caret line="295" column="37" lean-forward="false" selection-start-line="295" selection-start-column="37" selection-end-line="295" selection-end-column="37" />
               <folding>
                 <element signature="e#0#65#0" expanded="true" />
-                <marker date="1520264416875" expanded="true" signature="1088:1948" ph="..." />
+                <marker date="1520269675298" expanded="true" signature="1088:1948" ph="..." />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="fill_sections_api.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="fill_sections_api.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/odyssey/v1/form/controllers/fill_sections_api.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="324">
-              <caret line="51" column="41" lean-forward="false" selection-start-line="51" selection-start-column="41" selection-end-line="51" selection-end-column="41" />
+            <state relative-caret-position="378">
+              <caret line="51" column="32" lean-forward="true" selection-start-line="51" selection-start-column="32" selection-end-line="51" selection-end-column="32" />
               <folding />
             </state>
           </provider>
@@ -211,8 +210,8 @@
         <option value="$PROJECT_DIR$/odyssey/v1/slots/functions.py" />
         <option value="$PROJECT_DIR$/odyssey/v1/common/functions.py" />
         <option value="$PROJECT_DIR$/odyssey/v1/vendors/functions.py" />
-        <option value="$PROJECT_DIR$/odyssey/v1/form/functions.py" />
         <option value="$PROJECT_DIR$/odyssey/v1/form/controllers/fill_sections_api.py" />
+        <option value="$PROJECT_DIR$/odyssey/v1/form/functions.py" />
       </list>
     </option>
   </component>
@@ -1098,22 +1097,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/odyssey/v1/form/functions.py">
+    <entry file="file://$PROJECT_DIR$/odyssey/v1/form/controllers/fill_sections_api.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-311">
-          <caret line="198" column="42" lean-forward="false" selection-start-line="198" selection-start-column="42" selection-end-line="198" selection-end-column="42" />
-          <folding>
-            <element signature="e#0#65#0" expanded="true" />
-            <marker date="1520264416875" expanded="true" signature="1088:1948" ph="..." />
-          </folding>
+        <state relative-caret-position="378">
+          <caret line="51" column="32" lean-forward="true" selection-start-line="51" selection-start-column="32" selection-end-line="51" selection-end-column="32" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/odyssey/v1/form/controllers/fill_sections_api.py">
+    <entry file="file://$PROJECT_DIR$/odyssey/v1/form/functions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="324">
-          <caret line="51" column="41" lean-forward="false" selection-start-line="51" selection-start-column="41" selection-end-line="51" selection-end-column="41" />
-          <folding />
+        <state relative-caret-position="340">
+          <caret line="295" column="37" lean-forward="false" selection-start-line="295" selection-start-column="37" selection-end-line="295" selection-end-column="37" />
+          <folding>
+            <element signature="e#0#65#0" expanded="true" />
+            <marker date="1520269675298" expanded="true" signature="1088:1948" ph="..." />
+          </folding>
         </state>
       </provider>
     </entry>
