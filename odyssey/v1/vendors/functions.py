@@ -122,7 +122,7 @@ def manage_course_section(vendor_id):
                 d['status'] = relation.final_status
                 d['requestor_status'] = relation.requestor_status
                 d['request_by'] = relation.request_by
-                d['gc__name'] = gc_object.name
+                d['gc_name'] = gc_object.name
                 d['logo_url'] = gc_object.logo_url
                 result[d['status'].lower()].append(d)
         if len(contract_ids) > 0:
