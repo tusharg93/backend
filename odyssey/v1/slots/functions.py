@@ -156,7 +156,7 @@ def get_week_type_slots(gc_id, query_params):
     # date = datetime.today().date()
     # start_time = datetime.combine(date,gc_season_info.start_time)
     # end_time = datetime.combine(date,gc_season_info.end_time)
-    slot_data = table.query.filter(table.season_id == season_id,table.tee_time>=gc_season_info.start_time,table.tee_time<=gc_season_info.end_time).distinct(table.tee_time).all()
+    slot_data = table.query.filter(table.season_id == season_id).distinct(table.tee_time).all()
 
     #interval = gc_season_info.tee_interval
     result = list()
