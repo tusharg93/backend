@@ -144,7 +144,8 @@ def get_week_type_slots(gc_id, query_params):
     season_id = query_params.get("season_id")
     day_type_id = query_params.get("day_type")
     days = query_params.get('days')
-    days = tuple(days)
+    if days:
+        days = tuple(days)
     gc_season_info = db.session.query(GCSeasonsInfo.start_time, GCSeasonsInfo.end_time,
                                       GCSeasonsInfo.tee_interval).filter(
         GCSeasonsInfo.gc_id == gc_id,
@@ -156,7 +157,10 @@ def get_week_type_slots(gc_id, query_params):
     # date = datetime.today().date()
     # start_time = datetime.combine(date,gc_season_info.start_time)
     # end_time = datetime.combine(date,gc_season_info.end_time)
-    slot_data = table.query.filter(table.season_id == season_id,table.day.in_(days)).distinct(table.tee_time).all()
+    if days:
+        slot_data = table.query.filter(table.season_id == season_id,table.day.in_(days)).distinct(table.tee_time).all()
+    else:
+        slot_data = table.query.filter(table.season_id == season_id).distinct(table.tee_time).all()
 
     # interval = gc_season_info.tee_interval
     result = list()
