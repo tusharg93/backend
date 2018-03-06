@@ -140,27 +140,32 @@ def generate_slots(gc_object, today, year_end):
 
 
 def get_week_type_slots(gc_id, query_params):
+    table = get_gc_table_class_object("gc_{}_slots".format(gc_id))
     season_id = query_params.get("season_id")
     day_type_id = query_params.get("day_type")
-    gc_season_info = db.session.query(GCSeasonsInfo.start_time,GCSeasonsInfo.end_time, GCSeasonsInfo.tee_interval).filter(
+    days = query_params.get('days')
+    days = tuple(days)
+    gc_season_info = db.session.query(GCSeasonsInfo.start_time, GCSeasonsInfo.end_time,
+                                      GCSeasonsInfo.tee_interval).filter(
         GCSeasonsInfo.gc_id == gc_id,
         GCSeasonsInfo.season_id == season_id
     ).first()
-    gc_rates_info = GCRatesInfo.query.filter(GCRatesInfo.season_id == season_id,
-                                             GCRatesInfo.gc_id == gc_id,
-                                             GCRatesInfo.day_type == day_type_id).first()
-    date = datetime.today().date()
-    start_time = datetime.combine(date,gc_season_info.start_time)
-    end_time = datetime.combine(date,gc_season_info.end_time)
-    interval = gc_season_info.tee_interval
+    # gc_rates_info = GCRatesInfo.query.filter(GCRatesInfo.season_id == season_id,
+    #                                          GCRatesInfo.gc_id == gc_id,
+    #                                          GCRatesInfo.day_type == day_type_id).first()
+    # date = datetime.today().date()
+    # start_time = datetime.combine(date,gc_season_info.start_time)
+    # end_time = datetime.combine(date,gc_season_info.end_time)
+    slot_data = table.query.filter(table.season_id == season_id,table.day.in_(days)).distinct(table.tee_time).all()
+
+    # interval = gc_season_info.tee_interval
     result = list()
-    while start_time <= end_time:
+    for slot in slot_data:
         d = dict()
-        d['tee_time'] = start_time.strftime('%H:%M')
-        d['hole_9_price'] = gc_rates_info.hole_9_price if gc_rates_info.hole_9_price else None
-        d['hole_18_price'] = gc_rates_info.hole_18_price if gc_rates_info.hole_18_price else None
+        d['tee_time'] = slot.tee_time.strftime('%H:%M')
+        d['hole_9_price'] = slot.hole_9_price
+        d['hole_18_price'] = slot.hole_18_price
         result.append(d)
-        start_time = start_time + timedelta(minutes=int(interval))
     return result
 
 
