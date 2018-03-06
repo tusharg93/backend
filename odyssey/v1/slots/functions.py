@@ -157,8 +157,8 @@ def get_week_type_slots(gc_id, query_params):
     while start_time <= end_time:
         d = dict()
         d['tee_time'] = start_time.strftime('%H:%M')
-        d['hole_9_price'] = str(gc_rates_info.hole_9_price) if gc_rates_info.hole_9_price else None,
-        d['hole_18_price'] = str(gc_rates_info.hole_18_price) if gc_rates_info.hole_18_price else None,
+        d['hole_9_price'] = gc_rates_info.hole_9_price if gc_rates_info.hole_9_price else None
+        d['hole_18_price'] = gc_rates_info.hole_18_price if gc_rates_info.hole_18_price else None
         result.append(d)
         start_time = start_time + timedelta(minutes=int(interval))
     return result
@@ -192,17 +192,13 @@ def update_week_type_slots(gc_id, json_data):
                                                   table.season_id == season_id,
                                                   table.day_type == day_type,
                                                   table.day.in_(days)).all()
-        for slot in tee_slots:
-            slot.hole_9_price = hole_9_price
-            slot.hole_18_price = hole_18_price
-            slot.slot_status = slot_status
-            db.session.add(slot)
-        db.session.commit()
-        # db.session.execute(
-        #     "update \"gc_{}_slots\" set hole_9_price = {}, hole_18_price = {} , slot_status = '{}' where tee_time = '{}' and season_id = '{}' and day_type = '{}' and day in '{}' ;"
-        #         .format(gc_id, hole_9_price, hole_18_price, slot_status, tee_time, season_id, day_type, days),
-        #     bind=db.get_engine(app, 'base_db'))
-        # db.session.commit()
+        if tee_slots:
+            for slot in tee_slots:
+                slot.hole_9_price = hole_9_price
+                slot.hole_18_price = hole_18_price
+                slot.slot_status = slot_status
+                db.session.add(slot)
+            db.session.commit()
 
 def get_date_wise_slot(gc_id, query_data):
     date = query_data.get("date")
@@ -266,16 +262,18 @@ def apply_holiday(gc_id, dates):
     try:
         for date in dates:
             table_data = table.query.filter(table.date == date).first()
-            if table_data and table_data.day_type == weekend_id:
-                continue
-            else:
-                weekend_rate_info = GCRatesInfo.query.filter(GCRatesInfo.season_id == table_data.season_id,
+            if table_data:
+                if table_data.day_type == weekend_id:
+                    continue
+                else:
+                    weekend_rate_info = GCRatesInfo.query.filter(GCRatesInfo.season_id == table_data.season_id,
                                                              GCRatesInfo.gc_id == gc_id,
                                                              GCRatesInfo.day_type == weekend_id).first()
-                for slot in table_data:
-                    slot.hole_9_price = weekend_rate_info.hole_9_price
-                    slot.hole_18_price = weekend_rate_info.hole_18_price
-                    db.session.add(slot)
+                    table_data = table.query.filter(table.date == date).all()
+                    for slot in table_data:
+                        slot.hole_9_price = weekend_rate_info.hole_9_price
+                        slot.hole_18_price = weekend_rate_info.hole_18_price
+                        db.session.add(slot)
         db.session.commit()
     except:
         app.logger.info("error in holiday apply")
@@ -332,13 +330,15 @@ def apply_closed(gc_id, dates):
             tee = date_obj[1]
             if tee:
                 slot_data = table.query.filter(table.date == date, table.tee_time == tee).first()
-                slot_data.slot_status = 'CLOSED'
-                db.session.add(slot_data)
+                if slot_data:
+                    slot_data.slot_status = 'CLOSED'
+                    db.session.add(slot_data)
             else:
                 slot_data = table.query.filter(table.date == date).all()
-                for slot in slot_data:
-                    slot.slot_status = 'CLOSED'
-                    db.session.add(slot)
+                if slot_data:
+                    for slot in slot_data:
+                        slot.slot_status = 'CLOSED'
+                        db.session.add(slot)
         db.session.commit()
     except:
         app.logger.info("error in closed apply")
@@ -417,14 +417,16 @@ def update_day_types(gc_id, weekdays, weekends):
         weekday_id = days_type[0].id
         weekend_id = days_type[1].id
         weekday_slot_data = table.query.filter(table.day.in_(weekdays)).all()
-        for slot in weekday_slot_data:
-            slot.day_type = weekday_id
-            db.session.add(slot)
+        if weekday_slot_data:
+            for slot in weekday_slot_data:
+                slot.day_type = weekday_id
+                db.session.add(slot)
         weekend_slot_data = table.query.filter(table.day.in_(weekends)).all()
-        for slot in weekend_slot_data:
-            slot.day_type = weekend_id
-            db.session.add(slot)
-        db.session.commit()
+        if weekend_slot_data:
+            for slot in weekend_slot_data:
+                slot.day_type = weekend_id
+                db.session.add(slot)
+            db.session.commit()
     except:
         import traceback
         app.logger.info("error in updating weekday weekends")
@@ -433,7 +435,7 @@ def update_day_types(gc_id, weekdays, weekends):
 def update_weekly_off_day(gc_id, day):
     table = get_gc_table_class_object("gc_{}_slots".format(gc_id))
     try:
-        if not gc_id or not day:
+        if not gc_id or not day or table.query.count() == 0:
             return
         slots_data = table.query.filter(table.slot_status == 'WEEKLY_OFF').all()
         for slot in slots_data:
