@@ -146,6 +146,9 @@ def get_week_type_slots(gc_id, query_params):
     table = get_gc_table_class_object("gc_{}_slots".format(gc_id))
     season_id = query_params.get("season_id")
     day_type_id = query_params.get("day_type")
+    days = query_params.get("days")
+    if days:
+        days = tuple(days)
     gc_season_info = db.session.query(GCSeasonsInfo.start_time,GCSeasonsInfo.end_time, GCSeasonsInfo.tee_interval).filter(
         GCSeasonsInfo.gc_id == gc_id,
         GCSeasonsInfo.season_id == season_id
@@ -156,7 +159,11 @@ def get_week_type_slots(gc_id, query_params):
     # date = datetime.today().date()
     # start_time = datetime.combine(date,gc_season_info.start_time)
     # end_time = datetime.combine(date,gc_season_info.end_time)
-    slot_data = table.query.filter(table.season_id == season_id).distinct(table.tee_time).all()
+    if days:
+        slot_data = table.query.filter(table.season_id == season_id,table.days.in_(days)).distinct(table.tee_time).all()
+    else:
+        slot_data = table.query.filter(table.season_id == season_id).distinct(
+            table.tee_time).all()
 
     #interval = gc_season_info.tee_interval
     result = list()
@@ -180,8 +187,8 @@ def update_week_type_slots(gc_id, json_data):
         tee_time = datetime.strptime(slot.get('tee_time'),"%H:%M").time()
         hole_9_price = slot.get('hole_9_price',None)
         hole_18_price = slot.get('hole_18_price',None)
-        hole_9_flag = slot.get('hole_9_flag')
-        hole_18_flag = slot.get('hole_18_flag')
+        hole_9_flag = slot.get('hole_9_status')
+        hole_18_flag = slot.get('hole_18_status')
 
         tee_slots = db.session.query(table).filter(table.tee_time == tee_time,
                                                   table.season_id == season_id,
@@ -191,8 +198,8 @@ def update_week_type_slots(gc_id, json_data):
             for slot in tee_slots:
                 slot.hole_9_price = hole_9_price
                 slot.hole_18_price = hole_18_price
-                slot.slot_status_9 = 'OPEN' if hole_9_flag else 'CLOSED'
-                slot.slot_status_18 = 'OPEN' if hole_18_flag else 'CLOSED'
+                slot.slot_status_9 = hole_9_flag
+                slot.slot_status_18 = hole_18_flag
                 db.session.add(slot)
             db.session.commit()
 
@@ -227,14 +234,14 @@ def update_date_wise_slot(gc_id, json_data):
         slot_id = slot.get('id')
         hole_9_price = slot.get('hole_9_price',None)
         hole_18_price = slot.get('hole_18_price',None)
-        hole_9_flag = slot.get('hole_9_flag',None)
-        hole_18_flag = slot.get('hole_18_flag',None)
+        hole_9_flag = slot.get('hole_9_status',None)
+        hole_18_flag = slot.get('hole_18_status',None)
 
         update_dict[slot_id] = dict()
         update_dict[slot_id]['hole_9_price'] = hole_9_price
         update_dict[slot_id]['hole_18_price'] = hole_18_price
-        update_dict[slot_id]['slot_status_9'] = 'OPEN' if hole_9_flag else 'CLOSED'
-        update_dict[slot_id]['slot_status_18'] = 'OPEN' if hole_18_flag else 'CLOSED'
+        update_dict[slot_id]['slot_status_9'] = hole_9_flag
+        update_dict[slot_id]['slot_status_18'] = hole_18_flag
     slot_ids = update_dict.keys()
     tee_slots = db.session.query(table).filter(table.id.in_(slot_ids)).all()
     for slot in tee_slots:
