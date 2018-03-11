@@ -126,8 +126,8 @@ def generate_slots(gc_object, today, year_end):
                                 d['slot_status_9'] = status
                                 d['slot_status_18'] = status
                             else:
-                                d['slot_status_9'] = status
-                                d['slot_status_18'] = status
+                                d['slot_status_9'] = 'OPEN'
+                                d['slot_status_18'] = 'OPEN'
                         insert_data.append(d)
                     current_start = current_start + timedelta(minutes=interval)
                 start_date = start_date + timedelta(days=1)
