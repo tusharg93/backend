@@ -119,15 +119,15 @@ def generate_slots(gc_object, today, year_end):
                         d['hole_18_price'] = wk_18_price if day_id == weekday_id else we_18_price
                         d['min_golfers'] = min_weekdays if day_id == weekday_id else min_weekends
                         if not special_stime:
-                            d['slot_status_9'] = status
-                            d['slot_status_18'] = status
+                            d['slot_status_9'] = status if gc_object.hole_9_flag else None
+                            d['slot_status_18'] = status if gc_object.hole_18_flag else None
                         else:
                             if current_start >= special_stime and current_start <= special_etime:
-                                d['slot_status_9'] = status
-                                d['slot_status_18'] = status
+                                d['slot_status_9'] = status if gc_object.hole_9_flag else None
+                                d['slot_status_18'] = status if gc_object.hole_18_flag else None
                             else:
-                                d['slot_status_9'] = 'OPEN'
-                                d['slot_status_18'] = 'OPEN'
+                                d['slot_status_9'] = 'OPEN' if gc_object.hole_9_flag else None
+                                d['slot_status_18'] = 'OPEN' if gc_object.hole_18_flag else None
                         insert_data.append(d)
                     current_start = current_start + timedelta(minutes=interval)
                 start_date = start_date + timedelta(days=1)
