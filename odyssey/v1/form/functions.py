@@ -71,6 +71,8 @@ def gc_fill_section_1(json_data, gc_id):
     is_9_hole = json_data.get('hole_9', None)
     is_18_hole = json_data.get('hole_18', None)
     tee_avl = json_data.get('tee',None)
+    if tee_avl:
+        tee_avl = ','.join(str(x) for x in tee_avl)
     currency = json_data.get('currency', None)
     time_zone = json_data.get('timezone',None)
     member_flag = json_data.get('member', None)
@@ -96,6 +98,8 @@ def update_gc_fill_section_1(json_data, gc_id):
     is_9_hole = json_data.get('hole_9', None)
     is_18_hole = json_data.get('hole_18', None)
     tee_avl = json_data.get('tee',None)
+    if tee_avl:
+        tee_avl = ','.join(str(x) for x in tee_avl)
     currency = json_data.get('currency', None)
     time_zone = json_data.get('timezone',None)
     member_flag = json_data.get('member', None)
@@ -127,7 +131,7 @@ def gc_fill_section_2(json_data, gc_id):
         if closed_info:
             for close in closed_info:
                 day = close.get('day')
-                full_day = close.get('full_day',False)
+                full_day = close.get('fullday',False)
                 gc_object.maintenance_day = day
                 gc_object.maintenance_type = full_day
         db.session.add(gc_object)
@@ -151,7 +155,7 @@ def update_gc_fill_section_2(json_data, gc_id):
         if closed_info:
             for close in closed_info:
                 day = close.get('day')
-                full_day = close.get('full_day',False)
+                full_day = close.get('fullday',False)
                 if gc_object.maintenance_day and gc_object.maintenance_day != day:
                     flag2 = True
                     gc_object.maintenance_day = day
@@ -395,14 +399,25 @@ def fill_gc_profile(json_data, gc_id):
     weekday_start_time = weekday_hrs.get('start_time',None)
     weekday_end_time   = weekday_hrs.get('end_time',None)
     if weekday_start_time and weekday_end_time:
-        weekday_hrs_string = weekday_start_time + " to " + weekday_end_time
+        weekday_start_time = datetime.datetime.strptime(weekday_start_time,"%H:%M").time()
+        weekday_start_string = weekday_start_time.strftime('%I') + ':' + weekday_start_time.strftime('%M')  + weekday_start_time.strftime('%p')
+        weekday_end_time = datetime.datetime.strptime(weekday_end_time, "%H:%M").time()
+        weekday_end_string = weekday_end_time.strftime('%I') + ':' + weekday_end_time.strftime(
+            '%M') + weekday_end_time.strftime('%p')
+        weekday_hrs_string = weekday_start_string + " to " + weekday_end_string
     else:
         weekday_hrs_string  = None
     weekend_hrs = json_data.get('weekday_hrs', None)
     weekend_start_time = weekend_hrs.get('start_time', None)
     weekend_end_time = weekend_hrs.get('end_time', None)
     if weekend_start_time and weekend_end_time:
-        weekend_hrs_string = weekend_start_time + " to " + weekend_end_time
+        weekend_start_time = datetime.datetime.strptime(weekend_start_time, "%H:%M").time()
+        weekend_start_string = weekend_start_time.strftime('%I') + ':' + weekend_start_time.strftime(
+            '%M') + weekend_start_time.strftime('%p')
+        weekend_end_time = datetime.datetime.strptime(weekend_end_time, "%H:%M").time()
+        weekend_end_string = weekend_end_time.strftime('%I') + ':' + weekend_end_time.strftime(
+            '%M') + weekend_end_time.strftime('%p')
+        weekend_hrs_string = weekend_start_string + " to " + weekend_end_string
     else:
         weekend_hrs_string = None
     facebook_url = json_data.get('facebook_url',None)

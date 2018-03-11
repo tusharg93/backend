@@ -2,6 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9b24b5a3-f90b-474f-b0e7-841aa54438a1" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/odyssey/v1/form/functions.py" afterPath="$PROJECT_DIR$/odyssey/v1/form/functions.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/odyssey/v1/models/golf_course_master.py" afterPath="$PROJECT_DIR$/odyssey/v1/models/golf_course_master.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/odyssey/v1/slots/functions.py" afterPath="$PROJECT_DIR$/odyssey/v1/slots/functions.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -24,11 +27,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="functions.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="functions.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/odyssey/v1/slots/functions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="71">
-              <caret line="164" column="67" lean-forward="false" selection-start-line="164" selection-start-column="67" selection-end-line="164" selection-end-column="67" />
+            <state relative-caret-position="-432">
+              <caret line="322" column="8" lean-forward="false" selection-start-line="322" selection-start-column="8" selection-end-line="322" selection-end-column="8" />
               <folding>
                 <element signature="e#0#27#0" expanded="true" />
               </folding>
@@ -80,24 +83,24 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="functions.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="functions.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/odyssey/v1/form/functions.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="8100">
-              <caret line="459" column="48" lean-forward="false" selection-start-line="459" selection-start-column="48" selection-end-line="459" selection-end-column="48" />
+            <state relative-caret-position="574">
+              <caret line="419" column="26" lean-forward="false" selection-start-line="419" selection-start-column="26" selection-end-line="419" selection-end-column="26" />
               <folding>
                 <element signature="e#0#65#0" expanded="true" />
-                <marker date="1520274540162" expanded="true" signature="1088:1948" ph="..." />
+                <marker date="1520748234063" expanded="true" signature="1088:1948" ph="..." />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="vendor_course_contract.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/odyssey/v1/models/vendor_course_contract.py">
+      <file leaf-file-name="golf_course_master.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/odyssey/v1/models/golf_course_master.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="378">
-              <caret line="23" column="52" lean-forward="false" selection-start-line="23" selection-start-column="52" selection-end-line="23" selection-end-column="52" />
+            <state relative-caret-position="467">
+              <caret line="95" column="73" lean-forward="false" selection-start-line="95" selection-start-column="73" selection-end-line="95" selection-end-column="73" />
               <folding />
             </state>
           </provider>
@@ -201,17 +204,17 @@
         <option value="$PROJECT_DIR$/odyssey/v1/vendors/controllers/request_contract_api.py" />
         <option value="$PROJECT_DIR$/odyssey/v1/form/controllers/contract_request_api.py" />
         <option value="$PROJECT_DIR$/odyssey/v1/vendors/__init__.py" />
-        <option value="$PROJECT_DIR$/odyssey/v1/models/golf_course_master.py" />
         <option value="$PROJECT_DIR$/odyssey/v1/slots/controllers/manage_days_api.py" />
         <option value="$PROJECT_DIR$/odyssey/v1/slots/controllers/manage_slots_api.py" />
         <option value="$PROJECT_DIR$/odyssey/v1/common/functions.py" />
         <option value="$PROJECT_DIR$/odyssey/v1/form/controllers/fill_sections_api.py" />
         <option value="$PROJECT_DIR$/odyssey/v1/models/vendor_course_contract.py" />
-        <option value="$PROJECT_DIR$/odyssey/v1/form/functions.py" />
         <option value="$PROJECT_DIR$/odyssey/v1/vendors/functions.py" />
         <option value="$PROJECT_DIR$/odyssey/v1/models/slots_master.py" />
         <option value="$PROJECT_DIR$/odyssey/v1/models/dynamic_tables.py" />
         <option value="$PROJECT_DIR$/odyssey/v1/slots/functions.py" />
+        <option value="$PROJECT_DIR$/odyssey/v1/models/golf_course_master.py" />
+        <option value="$PROJECT_DIR$/odyssey/v1/form/functions.py" />
       </list>
     </option>
   </component>
@@ -237,6 +240,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -555,7 +559,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scratches" />
       <pane id="Scope" />
     </panes>
   </component>
@@ -693,7 +696,7 @@
     <frame x="64" y="-11" width="1303" height="780" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33466136" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.34023905" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -949,13 +952,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/odyssey/v1/models/golf_course_master.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1296">
-          <caret line="78" column="25" lean-forward="false" selection-start-line="78" selection-start-column="25" selection-end-line="78" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/odyssey/v1/models/gc_holidays_info.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="216">
@@ -1043,17 +1039,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/odyssey/v1/form/functions.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="8100">
-          <caret line="459" column="48" lean-forward="false" selection-start-line="459" selection-start-column="48" selection-end-line="459" selection-end-column="48" />
-          <folding>
-            <element signature="e#0#65#0" expanded="true" />
-            <marker date="1520274540162" expanded="true" signature="1088:1948" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/odyssey/v1/vendors/functions.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2160">
@@ -1100,10 +1085,29 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/odyssey/v1/slots/functions.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="71">
-          <caret line="164" column="67" lean-forward="false" selection-start-line="164" selection-start-column="67" selection-end-line="164" selection-end-column="67" />
+        <state relative-caret-position="-432">
+          <caret line="322" column="8" lean-forward="false" selection-start-line="322" selection-start-column="8" selection-end-line="322" selection-end-column="8" />
           <folding>
             <element signature="e#0#27#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odyssey/v1/models/golf_course_master.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="467">
+          <caret line="95" column="73" lean-forward="false" selection-start-line="95" selection-start-column="73" selection-end-line="95" selection-end-column="73" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/odyssey/v1/form/functions.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="574">
+          <caret line="419" column="26" lean-forward="false" selection-start-line="419" selection-start-column="26" selection-end-line="419" selection-end-column="26" />
+          <folding>
+            <element signature="e#0#65#0" expanded="true" />
+            <marker date="1520748234063" expanded="true" signature="1088:1948" ph="..." />
           </folding>
         </state>
       </provider>

@@ -93,7 +93,7 @@ class GolfCourseMaster(db.Model):
             "tnc":self.tnc,
             "cancel_policy":self.cancel_policy,
             "duration":self.duration_live_slots,
-            "tee_avl":self.tee_avl,
+            "tee_avl":self.tee_avl.split(',') if self.tee_avl else list(),
             "currency":self.currency,
             "time_zone":self.time_zone,
             "online":self.is_online,

@@ -160,7 +160,7 @@ def get_week_type_slots(gc_id, query_params):
     # start_time = datetime.combine(date,gc_season_info.start_time)
     # end_time = datetime.combine(date,gc_season_info.end_time)
     if days:
-        slot_data = table.query.filter(table.season_id == season_id,table.days.in_(days)).distinct(table.tee_time).all()
+        slot_data = table.query.filter(table.season_id == season_id,table.day.in_(days)).distinct(table.tee_time).all()
     else:
         slot_data = table.query.filter(table.season_id == season_id).distinct(
             table.tee_time).all()
@@ -312,14 +312,15 @@ def update_holiday_days(gc_id, json_data):
         date = datetime.strptime(date,"%Y-%m-%d").date()
         name = info.get("name")
         all_flag = info.get("universal",False)
-        obj = GCHolidaysDaysInfo.query.get(uid)
-        if obj:
-            obj.date = date
-            obj.name = name
-            obj.universal = all_flag
-            db.session.add(obj)
-        dates.append(date)
-    db.session.commit()
+        if uid:
+            obj = GCHolidaysDaysInfo.query.get(uid)
+            if obj:
+                obj.date = date
+                obj.name = name
+                obj.universal = all_flag
+                db.session.add(obj)
+            dates.append(date)
+        db.session.commit()
     apply_holiday(gc_id, dates)
 
 def apply_closed(gc_id, dates):
