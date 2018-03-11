@@ -51,7 +51,7 @@ def generate_slots(gc_object, today, year_end):
         season_id = gc_season_details.season_id
         maintenance_stime = None
         maintenance_etime = None
-        if maintenance_type == False:
+        if maintenance_type == True:
             maintenance_stime = gc_season_details.maintenance_stime
             maintenance_etime = gc_season_details.maintenance_etime
         if not start_date or not end_date:

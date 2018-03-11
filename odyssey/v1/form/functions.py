@@ -133,7 +133,7 @@ def gc_fill_section_2(json_data, gc_id):
                 day = close.get('day')
                 full_day = close.get('fullday',False)
                 gc_object.maintenance_day = day
-                gc_object.maintenance_type = full_day
+                gc_object.maintenance_type = not full_day
         db.session.add(gc_object)
         db.session.commit()
 
@@ -159,7 +159,7 @@ def update_gc_fill_section_2(json_data, gc_id):
                 if gc_object.maintenance_day and gc_object.maintenance_day != day:
                     flag2 = True
                     gc_object.maintenance_day = day
-                    gc_object.maintenance_type = full_day
+                    gc_object.maintenance_type = not full_day
         db.session.add(gc_object)
         db.session.commit()
         if flag2:
@@ -265,7 +265,7 @@ def gc_fill_section_4(json_data, gc_id):
                     rate_type="ONLINE",
                 )
                 db.session.add(gc_rates_obj)
-            if gc_object and gc_object.maintenance_type == False:
+            if gc_object and gc_object.maintenance_type == True:
                 maintenance = season_data.get('maintenance',None)
                 if maintenance:
                     stime = maintenance.get('start_time',None)
@@ -307,7 +307,7 @@ def update_gc_fill_section_4(json_data, gc_id):
                     db.session.add(gc_rates_obj)
             maintenance = season_data.get('maintenance',None)
             if maintenance:
-                if gc_object and gc_object.maintenance_type == False:
+                if gc_object and gc_object.maintenance_type == True:
                     stime = maintenance.get('start_time',None)
                     etime = maintenance.get('end_time',None)
                     if stime and etime:
