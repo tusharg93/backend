@@ -197,12 +197,12 @@ def update_week_type_slots(gc_id, json_data):
                                                   table.day_type == day_type,
                                                   table.day.in_(days)).all()
         if tee_slots:
-            for slot in tee_slots:
-                slot.hole_9_price = hole_9_price
-                slot.hole_18_price = hole_18_price
-                slot.slot_status_9 = hole_9_flag
-                slot.slot_status_18 = hole_18_flag
-                db.session.add(slot)
+            for slot_data in tee_slots:
+                slot_data.hole_9_price = hole_9_price
+                slot_data.hole_18_price = hole_18_price
+                slot_data.slot_status_9 = hole_9_flag
+                slot_data.slot_status_18 = hole_18_flag
+                db.session.add(slot_data)
             db.session.commit()
 
 def get_date_wise_slot(gc_id, query_data):
@@ -341,8 +341,8 @@ def apply_closed(gc_id, dates):
                 slot_data = table.query.filter(table.date == date).all()
                 if slot_data:
                     for slot in slot_data:
-                        slot_data.slot_status_9 = 'CLOSED'
-                        slot_data.slot_status_18 = 'CLOSED'
+                        slot.slot_status_9 = 'CLOSED'
+                        slot.slot_status_18 = 'CLOSED'
                         db.session.add(slot)
         db.session.commit()
     except:
