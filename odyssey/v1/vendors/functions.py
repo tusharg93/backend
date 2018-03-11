@@ -3,6 +3,7 @@ from odyssey.v1.common.functions import generate_id
 from flask import render_template
 from odyssey.v1.common.functions import send_mail, generate_confirmation_token, confirm_token
 from odyssey.v1.models.vendor_master import VendorMaster
+import datetime
 
 def register_vendor_data(form_data):
     name = form_data.get('name', None)
@@ -70,14 +71,25 @@ def create_vendor_profile(json_data, vendor_id):
     weekday_start_time = weekday_hrs.get('start_time', None)
     weekday_end_time = weekday_hrs.get('end_time', None)
     if weekday_start_time and weekday_end_time:
-        weekday_hrs_string = weekday_start_time + " to " + weekday_end_time
+        weekday_start_time = datetime.datetime.strptime(weekday_start_time,"%H:%M").time()
+        weekday_start_string = weekday_start_time.strftime('%I') + ':' + weekday_start_time.strftime('%M')  + weekday_start_time.strftime('%p')
+        weekday_end_time = datetime.datetime.strptime(weekday_end_time, "%H:%M").time()
+        weekday_end_string = weekday_end_time.strftime('%I') + ':' + weekday_end_time.strftime(
+            '%M') + weekday_end_time.strftime('%p')
+        weekday_hrs_string = weekday_start_string + " to " + weekday_end_string
     else:
-        weekday_hrs_string = None
+        weekday_hrs_string  = None
     weekend_hrs = json_data.get('weekday_hrs', None)
     weekend_start_time = weekend_hrs.get('start_time', None)
     weekend_end_time = weekend_hrs.get('end_time', None)
     if weekend_start_time and weekend_end_time:
-        weekend_hrs_string = weekend_start_time + " to " + weekend_end_time
+        weekend_start_time = datetime.datetime.strptime(weekend_start_time, "%H:%M").time()
+        weekend_start_string = weekend_start_time.strftime('%I') + ':' + weekend_start_time.strftime(
+            '%M') + weekend_start_time.strftime('%p')
+        weekend_end_time = datetime.datetime.strptime(weekend_end_time, "%H:%M").time()
+        weekend_end_string = weekend_end_time.strftime('%I') + ':' + weekend_end_time.strftime(
+            '%M') + weekend_end_time.strftime('%p')
+        weekend_hrs_string = weekend_start_string + " to " + weekend_end_string
     else:
         weekend_hrs_string = None
     facebook_url = json_data.get('fb_url',None)

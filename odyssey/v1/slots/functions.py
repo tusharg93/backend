@@ -9,7 +9,7 @@ from odyssey.v1.common.functions import generate_id
 from sqlalchemy import func
 
 def slot_generator(gc_id):
-    gc_info =  db.session.query(GolfCourseMaster.id,GolfCourseMaster.duration_live_slots,GolfCourseMaster.weekends,GolfCourseMaster.weekdays, GolfCourseMaster.time_zone, GolfCourseMaster.min_weekdays, GolfCourseMaster.min_weekends, GolfCourseMaster.maintenance_day, GolfCourseMaster.maintenance_type).filter(GolfCourseMaster.id == gc_id).first()
+    gc_info =  db.session.query(GolfCourseMaster.id,GolfCourseMaster.duration_live_slots,GolfCourseMaster.weekends,GolfCourseMaster.weekdays, GolfCourseMaster.time_zone, GolfCourseMaster.min_weekdays, GolfCourseMaster.min_weekends, GolfCourseMaster.maintenance_day, GolfCourseMaster.maintenance_type, GolfCourseMaster.hole_18_flag, GolfCourseMaster.hole_9_flag).filter(GolfCourseMaster.id == gc_id).first()
     today = datetime.utcnow()
     year_end = today.replace(day=31, month=12,hour=18,minute=30,second=0)
     generate_slots(gc_info, today, year_end)
@@ -172,6 +172,8 @@ def get_week_type_slots(gc_id, query_params):
         d['tee_time'] = slot.tee_time.strftime('%H:%M')
         d['hole_9_price'] = slot.hole_9_price
         d['hole_18_price'] = slot.hole_18_price
+        d['slot_status_9'] = slot.slot_status_9
+        d['slot_status_18'] = slot.slot_status_18
         result.append(d)
     return result
 
