@@ -102,7 +102,7 @@ def generate_slots(gc_object, today, year_end):
                 current_end = datetime.combine(start_date,end_time)
                 day_id = weekday_id if current_start.strftime('%a') in weekdays else weekend_id
                 if maintenance_day and current_start.strftime('%a') == maintenance_day:
-                    status = 'WEEKLY_OFF'
+                    status = 'CLOSED'
                     if maintenance_stime:
                         special_stime = datetime.combine(start_date, maintenance_stime)
                         special_etime = datetime.combine(start_date, maintenance_etime)
@@ -118,16 +118,16 @@ def generate_slots(gc_object, today, year_end):
                         d['hole_9_price'] = wk_9_price if day_id == weekday_id else we_9_price
                         d['hole_18_price'] = wk_18_price if day_id == weekday_id else we_18_price
                         d['min_golfers'] = min_weekdays if day_id == weekday_id else min_weekends
-                        if not special_stime:
-                            d['slot_status_9'] = status if gc_object.hole_9_flag else None
-                            d['slot_status_18'] = status if gc_object.hole_18_flag else None
-                        else:
-                            if current_start >= special_stime and current_start <= special_etime:
-                                d['slot_status_9'] = status if gc_object.hole_9_flag else None
-                                d['slot_status_18'] = status if gc_object.hole_18_flag else None
+                        if status == 'CLOSED':
+                            if not maintenance_stime:
+                                d['status'] = status
                             else:
-                                d['slot_status_9'] = 'OPEN' if gc_object.hole_9_flag else None
-                                d['slot_status_18'] = 'OPEN' if gc_object.hole_18_flag else None
+                                if current_start >= special_stime and current_start <= special_etime:
+                                    d['status'] = status
+                                else:
+                                    d['status'] = 'OPEN'
+                        else:
+                            d['status'] = 'OPEN'
                         insert_data.append(d)
                     current_start = current_start + timedelta(minutes=interval)
                 start_date = start_date + timedelta(days=1)
@@ -146,13 +146,16 @@ def get_week_type_slots(gc_id, query_params):
     table = get_gc_table_class_object("gc_{}_slots".format(gc_id))
     season_id = query_params.get("season_id")
     day_type_id = query_params.get("day_type")
+    m_day = GolfCourseMaster.query.filter(GolfCourseMaster.id == gc_id).first().maintenance_day
     days = query_params.get("days")
     if days:
+        if m_day and m_day in days:
+            days.remove(m_day)
         days = tuple(days)
-    gc_season_info = db.session.query(GCSeasonsInfo.start_time,GCSeasonsInfo.end_time, GCSeasonsInfo.tee_interval).filter(
-        GCSeasonsInfo.gc_id == gc_id,
-        GCSeasonsInfo.season_id == season_id
-    ).first()
+    # gc_season_info = db.session.query(GCSeasonsInfo.start_time,GCSeasonsInfo.end_time, GCSeasonsInfo.tee_interval).filter(
+    #     GCSeasonsInfo.gc_id == gc_id,
+    #     GCSeasonsInfo.season_id == season_id
+    # ).first()
     # gc_rates_info = GCRatesInfo.query.filter(GCRatesInfo.season_id == season_id,
     #                                          GCRatesInfo.gc_id == gc_id,
     #                                          GCRatesInfo.day_type == day_type_id).first()
@@ -172,8 +175,7 @@ def get_week_type_slots(gc_id, query_params):
         d['tee_time'] = slot.tee_time.strftime('%H:%M')
         d['hole_9_price'] = slot.hole_9_price
         d['hole_18_price'] = slot.hole_18_price
-        d['slot_status_9'] = slot.slot_status_9
-        d['slot_status_18'] = slot.slot_status_18
+        d['slot_status'] = slot.status
         result.append(d)
     return result
 
@@ -182,6 +184,9 @@ def update_week_type_slots(gc_id, json_data):
     day_type = json_data.get('day_type')
     season_id = json_data.get('season_id')
     days = json_data.get('days')
+    m_day = GolfCourseMaster.query.filter(GolfCourseMaster.id == gc_id).first().maintenance_day
+    if m_day and m_day in days:
+        days.remove(m_day)
     days = tuple(days)
     slots = json_data.get('slots')
     table =  get_gc_table_class_object("gc_{}_slots".format(gc_id))
@@ -189,8 +194,8 @@ def update_week_type_slots(gc_id, json_data):
         tee_time = datetime.strptime(slot.get('tee_time'),"%H:%M").time()
         hole_9_price = slot.get('hole_9_price',None)
         hole_18_price = slot.get('hole_18_price',None)
-        hole_9_flag = slot.get('hole_9_status')
-        hole_18_flag = slot.get('hole_18_status')
+        status = slot.get('slot_status')
+
 
         tee_slots = db.session.query(table).filter(table.tee_time == tee_time,
                                                   table.season_id == season_id,
@@ -200,8 +205,7 @@ def update_week_type_slots(gc_id, json_data):
             for slot_data in tee_slots:
                 slot_data.hole_9_price = hole_9_price
                 slot_data.hole_18_price = hole_18_price
-                slot_data.slot_status_9 = hole_9_flag
-                slot_data.slot_status_18 = hole_18_flag
+                slot_data.status = status
                 db.session.add(slot_data)
             db.session.commit()
 
@@ -223,8 +227,7 @@ def get_date_wise_slot(gc_id, query_data):
         d['tee_time'] = slot.tee_time.strftime('%H:%M')
         d['hole_9_price'] = slot.hole_9_price
         d['hole_18_price'] = slot.hole_18_price
-        d['slot_status_9'] = slot.slot_status_9
-        d['slot_status_18'] = slot.slot_status_18
+        d['slot_status'] = slot.status
         result.append(d)
     return result
 
@@ -236,22 +239,19 @@ def update_date_wise_slot(gc_id, json_data):
         slot_id = slot.get('id')
         hole_9_price = slot.get('hole_9_price',None)
         hole_18_price = slot.get('hole_18_price',None)
-        hole_9_flag = slot.get('hole_9_status',None)
-        hole_18_flag = slot.get('hole_18_status',None)
+        status = slot.get('slot_status',None)
 
         update_dict[slot_id] = dict()
         update_dict[slot_id]['hole_9_price'] = hole_9_price
         update_dict[slot_id]['hole_18_price'] = hole_18_price
-        update_dict[slot_id]['slot_status_9'] = hole_9_flag
-        update_dict[slot_id]['slot_status_18'] = hole_18_flag
+        update_dict[slot_id]['slot_status'] = status
     slot_ids = update_dict.keys()
     tee_slots = db.session.query(table).filter(table.id.in_(slot_ids)).all()
     for slot in tee_slots:
         data = update_dict[slot.id]
         slot.hole_9_price = data['hole_9_price']
         slot.hole_18_price = data['hole_18_price']
-        slot.slot_status_9 = data['slot_status_9']
-        slot.slot_status_18 =  data['slot_status_18']
+        slot.status = data['slot_status']
         db.session.add(slot)
     if tee_slots:
         db.session.commit()
@@ -273,8 +273,10 @@ def apply_holiday(gc_id, dates):
                                                              GCRatesInfo.day_type == weekend_id).first()
                     table_data = table.query.filter(table.date == date).all()
                     for slot in table_data:
-                        slot.hole_9_price = weekend_rate_info.hole_9_price
-                        slot.hole_18_price = weekend_rate_info.hole_18_price
+                        if slot.hole_9_price is not None:
+                            slot.hole_9_price = weekend_rate_info.hole_9_price
+                        if slot.hole_18_price is not None:
+                            slot.hole_18_price = weekend_rate_info.hole_18_price
                         db.session.add(slot)
         db.session.commit()
     except:
@@ -330,19 +332,19 @@ def apply_closed(gc_id, dates):
     try:
         for date_obj in dates:
             date = date_obj[0]
-            tee = date_obj[1]
-            if tee:
-                slot_data = table.query.filter(table.date == date, table.tee_time == tee).first()
+            start_tee = date_obj[1]
+            end_tee = date_obj[2]
+            if start_tee:
+                slot_data = table.query.filter(table.date == date, table.tee_time >= start_tee, table.tee_time <= end_tee).all()
                 if slot_data:
-                    slot_data.slot_status_9 = 'CLOSED'
-                    slot_data.slot_status_18 = 'CLOSED'
-                    db.session.add(slot_data)
+                    for slot in slot_data:
+                        slot.status = 'CLOSED'
+                        db.session.add(slot)
             else:
                 slot_data = table.query.filter(table.date == date).all()
                 if slot_data:
                     for slot in slot_data:
-                        slot.slot_status_9 = 'CLOSED'
-                        slot.slot_status_18 = 'CLOSED'
+                        slot.status = 'CLOSED'
                         db.session.add(slot)
         db.session.commit()
     except:
@@ -360,6 +362,7 @@ def create_closed_days(gc_id, json_data):
         date = datetime.strptime(date,'%Y-%m-%d')
         full_day = info.get("full_day",False)
         start_time = None
+        end_time = None
         if full_day:
             obj = GCClosedDaysInfo(
                 id=generate_id(),
@@ -368,9 +371,13 @@ def create_closed_days(gc_id, json_data):
                 full_day=full_day,
                 start_time=None
             )
+            obj.end_time = None
         else:
             start_time = info.get('start_time')
+            end_time = info.get('end_time',None)
             start_time = datetime.strptime(start_time, '%H:%M').time()
+            if end_time:
+                end_time = datetime.strptime(end_time, '%H:%M').time()
             obj = GCClosedDaysInfo(
                 id=generate_id(),
                 date=date,
@@ -378,8 +385,9 @@ def create_closed_days(gc_id, json_data):
                 full_day=full_day,
                 start_time=start_time
             )
+            obj.end_time = end_time
         db.session.add(obj)
-        dates.append([date,start_time])
+        dates.append([date,start_time, end_time])
     db.session.commit()
     apply_closed(gc_id, dates)
 
@@ -393,20 +401,26 @@ def update_closed_days(gc_id, json_data):
         uid  = info.get("id")
         full_day = info.get("full_day",None)
         start_time = None
+        end_time = None
         obj = GCClosedDaysInfo.query.get(uid)
         if obj:
             if full_day and full_day == True:
                 obj.full_day = full_day
                 obj.start_time = None
+                obj.end_time = None
                 obj.date = date
             else:
                 start_time = info.get('start_time')
                 start_time = datetime.strptime(start_time, '%H:%M').time()
+                end_time = info.get('end_time', None)
+                if end_time:
+                    end_time = datetime.strptime(end_time, '%H:%M').time()
                 obj.full_day = False
                 obj.start_time = start_time
+                obj.end_time = end_time
                 obj.date = date
             db.session.add(obj)
-            dates.append([date,start_time])
+            dates.append([date,start_time,end_time])
     db.session.commit()
     apply_closed(gc_id, dates)
 
@@ -437,22 +451,33 @@ def update_day_types(gc_id, weekdays, weekends):
         app.logger.info("error in updating weekday weekends")
         app.logger.error(traceback.print_exc())
 
-def update_weekly_off_day(gc_id, day):
+def update_weekly_off_day(gc_id, old_mday, current_mday, full_day):
     table = get_gc_table_class_object("gc_{}_slots".format(gc_id))
     try:
-        if not gc_id or not day or table.query.count() == 0:
+        if not gc_id or table.query.count() == 0:
             return
-        slots_data = table.query.filter(table.slot_status == 'WEEKLY_OFF').all()
-        for slot in slots_data:
-            slot.slot_status_9 = 'OPEN'
-            slot.slot_status_18 = 'OPEN'
-            db.session.add(slot)
-        slots_day_data = table.query.filter(table.day == day).all()
-        for slot in slots_day_data:
-            slot.slot_status_9 = 'WEEKLY_OFF'
-            slot.slot_status_18 = 'WEEKLY_OFF'
-            db.session.add(slot)
-        db.session.commit()
+        if old_mday is not None:
+            slots_data = table.query.filter(table.day == old_mday,table.status == 'CLOSED').all()
+            for slot in slots_data:
+                slot.status = 'OPEN'
+                db.session.add(slot)
+            db.session.commit()
+        if current_mday is not None:
+            if full_day == True:
+                slots_day_data = table.query.filter(table.day == current_mday).all()
+                for slot in slots_day_data:
+                    slot.status = 'CLOSED'
+                    db.session.add(slot)
+            else:
+                gc_mtimes = GCSeasonsInfo.query.filter(GCSeasonsInfo.gc_id == gc_id).all()
+                for season_data in gc_mtimes:
+                    s_time = season_data.maintenance_stime
+                    e_time = season_data.maintenance_etime
+                    slots_day_data = table.query.filter(table.day == current_mday, table.tee_time >= s_time, table.tee_time <= e_time).all()
+                    for slot in slots_day_data:
+                        slot.status = 'CLOSED'
+                        db.session.add(slot)
+            db.session.commit()
     except:
         import traceback
         app.logger.info("error in updating maintenance day")

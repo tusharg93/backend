@@ -14,7 +14,6 @@ class SlotsMaster(db.Model):
     hole_18_price = db.Column(db.Float)
     season_id = db.Column(db.String,db.ForeignKey('{}.id'.format(SEASON_MASTER)))
     day_type = db.Column(db.String,db.ForeignKey('{}.id'.format(DAYS_TYPE_INFO)))
-    slot_status_9 = db.Column(db.String)
-    slot_status_18 = db.Column(db.String)
+    status = db.Column(db.String)
     min_golfers = db.Column(db.Integer)
 

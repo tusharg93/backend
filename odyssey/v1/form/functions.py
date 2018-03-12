@@ -146,6 +146,9 @@ def update_gc_fill_section_2(json_data, gc_id):
         weekdays = ','.join(weekdays)
         weekends = ','.join(weekends)
         flag = False
+        old_val = None
+        day = None
+        full_day = None
         if not gc_object.weekdays or (weekdays != gc_object.weekdays):
             flag = True
             gc_object.weekdays = weekdays
@@ -156,14 +159,15 @@ def update_gc_fill_section_2(json_data, gc_id):
             for close in closed_info:
                 day = close.get('day')
                 full_day = close.get('fullday',False)
-                if gc_object.maintenance_day and gc_object.maintenance_day != day:
+                old_val = gc_object.maintenance_day
+                gc_object.maintenance_day = day
+                gc_object.maintenance_type = not full_day
+                if old_val and old_val != day:
                     flag2 = True
-                    gc_object.maintenance_day = day
-                    gc_object.maintenance_type = not full_day
         db.session.add(gc_object)
         db.session.commit()
         if flag2:
-            update_weekly_off_day(gc_id, day)
+            update_weekly_off_day(gc_id, old_val, day, full_day)
         if flag:
             update_day_types(gc_id, weekdays, weekends)
 

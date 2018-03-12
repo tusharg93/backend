@@ -22,8 +22,7 @@ def get_gc_slot_table_object(table_name):
         db.Column('hole_9_price', db.Float),
         db.Column('hole_18_price', db.Float),
         db.Column('season_id',db.String),
-        db.Column('slot_status_9', db.String),
-        db.Column('slot_status_18',db.String),
+        db.Column('status',db.String),
         db.Column('min_golfers',db.Integer)
     )
 
@@ -40,8 +39,7 @@ def get_gc_table_class_object(table_name):
         'hole_9_price':db.Column('hole_9_price', db.Float),
         'hole_18_price':db.Column('hole_18_price', db.Float),
         'season_id':db.Column('season_id',db.String),
-        'slot_status_9':db.Column('slot_status_9', db.String),
-        'slot_status_18':db.Column('slot_status_18',db.String),
+        'status':db.Column('status', db.String),
         'min_golfers':db.Column('min_golfers',db.Integer)
 
     }
