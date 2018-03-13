@@ -463,20 +463,25 @@ def update_weekly_off_day(gc_id, old_mday, current_mday, full_day):
                 db.session.add(slot)
             db.session.commit()
         if current_mday is not None:
-            if full_day == True:
+            if full_day is not None and full_day == True:
                 slots_day_data = table.query.filter(table.day == current_mday).all()
-                for slot in slots_day_data:
-                    slot.status = 'CLOSED'
-                    db.session.add(slot)
+                if slots_day_data:
+                    for slot in slots_day_data:
+                        slot.status = 'CLOSED'
+                        db.session.add(slot)
             else:
                 gc_mtimes = GCSeasonsInfo.query.filter(GCSeasonsInfo.gc_id == gc_id).all()
                 for season_data in gc_mtimes:
                     s_time = season_data.maintenance_stime
                     e_time = season_data.maintenance_etime
-                    slots_day_data = table.query.filter(table.day == current_mday, table.tee_time >= s_time, table.tee_time <= e_time).all()
-                    for slot in slots_day_data:
-                        slot.status = 'CLOSED'
-                        db.session.add(slot)
+                    if s_time and e_time:
+                        slots_day_data = table.query.filter(table.day == current_mday, table.season_id == season_data.season_id,table.tee_time >= s_time, table.tee_time <= e_time).all()
+                    else:
+                        slots_day_data = table.query.filter(table.day == current_mday, table.season_id == season_data.season_id).all()
+                    if slots_day_data:
+                        for slot in slots_day_data:
+                            slot.status = 'CLOSED'
+                            db.session.add(slot)
             db.session.commit()
     except:
         import traceback
